@@ -1,0 +1,3 @@
+opengl.o opengl.o: opengl.c ../../config.h
+
+../../config.h:

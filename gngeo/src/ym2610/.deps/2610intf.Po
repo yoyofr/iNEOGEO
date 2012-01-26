@@ -1,0 +1,209 @@
+2610intf.o 2610intf.o: 2610intf.c ../../config.h /usr/include/stdio.h \
+  /usr/include/_types.h /usr/include/sys/_types.h \
+  /usr/include/sys/cdefs.h /usr/include/machine/_types.h \
+  /usr/include/i386/_types.h /usr/include/secure/_stdio.h \
+  /usr/include/secure/_common.h 2610intf.h ym2610.h mvs.h \
+  /opt/local/include/SDL/SDL.h /opt/local/include/SDL/SDL_main.h \
+  /opt/local/include/SDL/SDL_stdinc.h /opt/local/include/SDL/SDL_config.h \
+  /opt/local/include/SDL/SDL_platform.h /usr/include/sys/types.h \
+  /usr/include/sys/appleapiopts.h /usr/include/machine/types.h \
+  /usr/include/i386/types.h /usr/include/i386/_types.h \
+  /usr/include/machine/endian.h /usr/include/i386/endian.h \
+  /usr/include/sys/_endian.h /usr/include/libkern/_OSByteOrder.h \
+  /usr/include/libkern/i386/_OSByteOrder.h /usr/include/sys/_structs.h \
+  /usr/include/stdlib.h /usr/include/Availability.h \
+  /usr/include/AvailabilityInternal.h /usr/include/sys/wait.h \
+  /usr/include/sys/signal.h /usr/include/machine/signal.h \
+  /usr/include/i386/signal.h /usr/include/i386/_structs.h \
+  /usr/include/machine/_structs.h /usr/include/mach/i386/_structs.h \
+  /usr/include/sys/resource.h /usr/include/alloca.h \
+  /usr/llvm-gcc-4.2/bin/../lib/gcc/i686-apple-darwin10/4.2.1/include/stddef.h \
+  /usr/llvm-gcc-4.2/bin/../lib/gcc/i686-apple-darwin10/4.2.1/include/stdarg.h \
+  /usr/include/string.h /usr/include/secure/_string.h \
+  /usr/include/strings.h /usr/include/inttypes.h \
+  /usr/llvm-gcc-4.2/bin/../lib/gcc/i686-apple-darwin10/4.2.1/include/stdint.h \
+  /usr/include/ctype.h /usr/include/runetype.h \
+  /opt/local/include/SDL/begin_code.h /opt/local/include/SDL/close_code.h \
+  /opt/local/include/SDL/SDL_audio.h /opt/local/include/SDL/SDL_error.h \
+  /opt/local/include/SDL/SDL_endian.h /opt/local/include/SDL/SDL_mutex.h \
+  /opt/local/include/SDL/SDL_thread.h /opt/local/include/SDL/SDL_rwops.h \
+  /opt/local/include/SDL/SDL_cdrom.h /opt/local/include/SDL/SDL_cpuinfo.h \
+  /opt/local/include/SDL/SDL_events.h /opt/local/include/SDL/SDL_active.h \
+  /opt/local/include/SDL/SDL_keyboard.h \
+  /opt/local/include/SDL/SDL_keysym.h /opt/local/include/SDL/SDL_mouse.h \
+  /opt/local/include/SDL/SDL_video.h \
+  /opt/local/include/SDL/SDL_joystick.h /opt/local/include/SDL/SDL_quit.h \
+  /opt/local/include/SDL/SDL_loadso.h /opt/local/include/SDL/SDL_timer.h \
+  /opt/local/include/SDL/SDL_version.h ../timer.h \
+  /opt/local/include/SDL/SDL.h ../emu.h \
+  /opt/local/include/SDL/SDL_types.h ../memory.h \
+  /opt/local/include/SDL/SDL_endian.h ../video.h ../ym2610/2610intf.h \
+  ../state.h /usr/include/zlib.h /usr/include/zconf.h \
+  /usr/llvm-gcc-4.2/bin/../lib/gcc/i686-apple-darwin10/4.2.1/include/stdbool.h \
+  ../roms.h
+
+../../config.h:
+
+/usr/include/stdio.h:
+
+/usr/include/_types.h:
+
+/usr/include/sys/_types.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/machine/_types.h:
+
+/usr/include/i386/_types.h:
+
+/usr/include/secure/_stdio.h:
+
+/usr/include/secure/_common.h:
+
+2610intf.h:
+
+ym2610.h:
+
+mvs.h:
+
+/opt/local/include/SDL/SDL.h:
+
+/opt/local/include/SDL/SDL_main.h:
+
+/opt/local/include/SDL/SDL_stdinc.h:
+
+/opt/local/include/SDL/SDL_config.h:
+
+/opt/local/include/SDL/SDL_platform.h:
+
+/usr/include/sys/types.h:
+
+/usr/include/sys/appleapiopts.h:
+
+/usr/include/machine/types.h:
+
+/usr/include/i386/types.h:
+
+/usr/include/i386/_types.h:
+
+/usr/include/machine/endian.h:
+
+/usr/include/i386/endian.h:
+
+/usr/include/sys/_endian.h:
+
+/usr/include/libkern/_OSByteOrder.h:
+
+/usr/include/libkern/i386/_OSByteOrder.h:
+
+/usr/include/sys/_structs.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/Availability.h:
+
+/usr/include/AvailabilityInternal.h:
+
+/usr/include/sys/wait.h:
+
+/usr/include/sys/signal.h:
+
+/usr/include/machine/signal.h:
+
+/usr/include/i386/signal.h:
+
+/usr/include/i386/_structs.h:
+
+/usr/include/machine/_structs.h:
+
+/usr/include/mach/i386/_structs.h:
+
+/usr/include/sys/resource.h:
+
+/usr/include/alloca.h:
+
+/usr/llvm-gcc-4.2/bin/../lib/gcc/i686-apple-darwin10/4.2.1/include/stddef.h:
+
+/usr/llvm-gcc-4.2/bin/../lib/gcc/i686-apple-darwin10/4.2.1/include/stdarg.h:
+
+/usr/include/string.h:
+
+/usr/include/secure/_string.h:
+
+/usr/include/strings.h:
+
+/usr/include/inttypes.h:
+
+/usr/llvm-gcc-4.2/bin/../lib/gcc/i686-apple-darwin10/4.2.1/include/stdint.h:
+
+/usr/include/ctype.h:
+
+/usr/include/runetype.h:
+
+/opt/local/include/SDL/begin_code.h:
+
+/opt/local/include/SDL/close_code.h:
+
+/opt/local/include/SDL/SDL_audio.h:
+
+/opt/local/include/SDL/SDL_error.h:
+
+/opt/local/include/SDL/SDL_endian.h:
+
+/opt/local/include/SDL/SDL_mutex.h:
+
+/opt/local/include/SDL/SDL_thread.h:
+
+/opt/local/include/SDL/SDL_rwops.h:
+
+/opt/local/include/SDL/SDL_cdrom.h:
+
+/opt/local/include/SDL/SDL_cpuinfo.h:
+
+/opt/local/include/SDL/SDL_events.h:
+
+/opt/local/include/SDL/SDL_active.h:
+
+/opt/local/include/SDL/SDL_keyboard.h:
+
+/opt/local/include/SDL/SDL_keysym.h:
+
+/opt/local/include/SDL/SDL_mouse.h:
+
+/opt/local/include/SDL/SDL_video.h:
+
+/opt/local/include/SDL/SDL_joystick.h:
+
+/opt/local/include/SDL/SDL_quit.h:
+
+/opt/local/include/SDL/SDL_loadso.h:
+
+/opt/local/include/SDL/SDL_timer.h:
+
+/opt/local/include/SDL/SDL_version.h:
+
+../timer.h:
+
+/opt/local/include/SDL/SDL.h:
+
+../emu.h:
+
+/opt/local/include/SDL/SDL_types.h:
+
+../memory.h:
+
+/opt/local/include/SDL/SDL_endian.h:
+
+../video.h:
+
+../ym2610/2610intf.h:
+
+../state.h:
+
+/usr/include/zlib.h:
+
+/usr/include/zconf.h:
+
+/usr/llvm-gcc-4.2/bin/../lib/gcc/i686-apple-darwin10/4.2.1/include/stdbool.h:
+
+../roms.h:

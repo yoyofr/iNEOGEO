@@ -1,0 +1,16 @@
+v0.1 - 26/01/2012
+-----------------
+- First version to init git repository
+- CPU Cores: using mamez80 and generator68k. Planning to move to Fame/C for 68k emulation since generator
+has some issues (at least with viewpoint and unaligned word access).
+- Basic virtual pad implemented as PoC (Proof of Concept). iCade supported but buttons are currently hardcoded.
+- Performances are very good on iPad and acceptable on iPhone 3GS (minimal testing done here on a few games).
+- Blitter is using OpenGL (ES v1.0, unoptimized).
+
+Usage:
+------
+
+- Put ROMS & Bios file (neogeo.zip) in iNEOGEO's Documents folder, using iTunes file sharing.
+- For large roms (for ex, Metal Slug 3), you should use a gngeo dump (.gno file). You need to use 
+gngeo windows/linux/osx for that. Just add "--dump" to your command line. 
+Example: "./gngeo -i /my_roms_folder --dump mslug3"
