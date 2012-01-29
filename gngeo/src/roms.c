@@ -1884,7 +1884,7 @@ void dr_free_roms(GAME_ROMS *r) {
 	free_region(&r->spr_usage);
 
 	free(r->info.name);
-	free(r->info.longname);
+	if (r->info.longname) free(r->info.longname);
 
 	conf.game = NULL;
 }

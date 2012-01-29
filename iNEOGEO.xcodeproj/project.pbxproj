@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		33163A2B14D411F700144960 /* video_arm.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 33163A2A14D411F600144960 /* video_arm.o */; };
 		3340AF9214CC050300C4D1B0 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3340AF9114CC050300C4D1B0 /* Default@2x.png */; };
 		3340AF9414CC051600C4D1B0 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 3340AF9314CC051600C4D1B0 /* Default-Landscape~ipad.png */; };
 		3340AF9614CC051A00C4D1B0 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 3340AF9514CC051A00C4D1B0 /* Default-Portrait~ipad.png */; };
@@ -97,6 +98,10 @@
 		33B233DA14CB652D009AF545 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 33B233D914CB6529009AF545 /* Default.png */; };
 		33B233DC14CB653D009AF545 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 33B233DB14CB653B009AF545 /* Icon.png */; };
 		33B233DE14CB6544009AF545 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 33B233DD14CB6541009AF545 /* Icon@2x.png */; };
+		33BB810C14D54FA700EA4B32 /* libBTstack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BB810B14D54FA600EA4B32 /* libBTstack.dylib */; };
+		33F60AA614D34847009ABA8F /* Cyclone.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 33F60A9C14D34847009ABA8F /* Cyclone.o */; };
+		33F60AAE14D34847009ABA8F /* cyclone_interf.c in Sources */ = {isa = PBXBuildFile; fileRef = 33F60AA414D34847009ABA8F /* cyclone_interf.c */; };
+		33F60AC014D35258009ABA8F /* drz80_interf.c in Sources */ = {isa = PBXBuildFile; fileRef = 33F60AB814D35257009ABA8F /* drz80_interf.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +129,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		33163A2814D411D500144960 /* video_arm.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = video_arm.s; sourceTree = "<group>"; };
+		33163A2A14D411F600144960 /* video_arm.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = video_arm.o; sourceTree = "<group>"; };
 		3340AF9114CC050300C4D1B0 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		3340AF9314CC051600C4D1B0 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		3340AF9514CC051A00C4D1B0 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
@@ -229,8 +236,6 @@
 		33B232BA14C7459E009AF545 /* mame_layer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mame_layer.c; sourceTree = "<group>"; };
 		33B232BB14C7459E009AF545 /* mame_layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mame_layer.h; sourceTree = "<group>"; };
 		33B232BF14C7459E009AF545 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		33B232C014C7459E009AF545 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		33B232C114C7459E009AF545 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		33B232C214C7459E009AF545 /* z80.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = z80.c; sourceTree = "<group>"; };
 		33B232C314C7459E009AF545 /* z80.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = z80.h; sourceTree = "<group>"; };
 		33B232C414C7459E009AF545 /* z80daa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = z80daa.h; sourceTree = "<group>"; };
@@ -284,6 +289,14 @@
 		33B233D914CB6529009AF545 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		33B233DB14CB653B009AF545 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		33B233DD14CB6541009AF545 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		33BB810B14D54FA600EA4B32 /* libBTstack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libBTstack.dylib; path = Lib/libBTstack.dylib; sourceTree = "<group>"; };
+		33F60A9B14D34847009ABA8F /* Cyclone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cyclone.h; sourceTree = "<group>"; };
+		33F60A9C14D34847009ABA8F /* Cyclone.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = Cyclone.o; sourceTree = "<group>"; };
+		33F60AA414D34847009ABA8F /* cyclone_interf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cyclone_interf.c; sourceTree = "<group>"; };
+		33F60AB014D35257009ABA8F /* DrZ80.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrZ80.h; sourceTree = "<group>"; };
+		33F60AB114D35257009ABA8F /* DrZ80.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = DrZ80.o; sourceTree = "<group>"; };
+		33F60AB214D35257009ABA8F /* DrZ80.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = DrZ80.s; sourceTree = "<group>"; };
+		33F60AB814D35257009ABA8F /* drz80_interf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = drz80_interf.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -300,6 +313,9 @@
 				33B230B314C6AE3C009AF545 /* UIKit.framework in Frameworks */,
 				33B230B514C6AE3C009AF545 /* Foundation.framework in Frameworks */,
 				33B230B714C6AE3C009AF545 /* CoreGraphics.framework in Frameworks */,
+				33F60AA614D34847009ABA8F /* Cyclone.o in Frameworks */,
+				33163A2B14D411F700144960 /* video_arm.o in Frameworks */,
+				33BB810C14D54FA700EA4B32 /* libBTstack.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +340,7 @@
 				33B233DB14CB653B009AF545 /* Icon.png */,
 				33B233D914CB6529009AF545 /* Default.png */,
 				33B2336914C749CE009AF545 /* libz.dylib */,
+				33BB810B14D54FA600EA4B32 /* libBTstack.dylib */,
 				33B230F214C6AF20009AF545 /* QuartzCore.framework */,
 				33B230F014C6AF11009AF545 /* AudioToolbox.framework */,
 				33B230EE14C6AF0A009AF545 /* CoreAudio.framework */,
@@ -400,7 +417,11 @@
 				33B2324F14C7459E009AF545 /* conf.c */,
 				33B2325014C7459E009AF545 /* conf.h */,
 				33B2325114C7459E009AF545 /* config.h */,
+				33F60A9914D34847009ABA8F /* cyclone */,
+				33F60AA414D34847009ABA8F /* cyclone_interf.c */,
 				33B2325214C7459E009AF545 /* debug.c */,
+				33F60AAF14D35257009ABA8F /* drz80 */,
+				33F60AB814D35257009ABA8F /* drz80_interf.c */,
 				33B2325314C7459E009AF545 /* debug.h */,
 				33B2325414C7459E009AF545 /* effect */,
 				33B2327714C7459E009AF545 /* effect.h */,
@@ -461,6 +482,8 @@
 				33B232E514C7459E009AF545 /* unzip.c */,
 				33B232E614C7459E009AF545 /* unzip.h */,
 				33B232E714C7459E009AF545 /* video.c */,
+				33163A2814D411D500144960 /* video_arm.s */,
+				33163A2A14D411F600144960 /* video_arm.o */,
 				33B232E814C7459E009AF545 /* video.h */,
 				33B232E914C7459E009AF545 /* video_template.h */,
 				33B232EA14C7459E009AF545 /* ym2610 */,
@@ -554,8 +577,6 @@
 			isa = PBXGroup;
 			children = (
 				33B232BF14C7459E009AF545 /* Makefile */,
-				33B232C014C7459E009AF545 /* Makefile.am */,
-				33B232C114C7459E009AF545 /* Makefile.in */,
 				33B232C214C7459E009AF545 /* z80.c */,
 				33B232C314C7459E009AF545 /* z80.h */,
 				33B232C414C7459E009AF545 /* z80daa.h */,
@@ -594,6 +615,25 @@
 			name = roms;
 			path = Resources/roms;
 			sourceTree = SOURCE_ROOT;
+		};
+		33F60A9914D34847009ABA8F /* cyclone */ = {
+			isa = PBXGroup;
+			children = (
+				33F60A9B14D34847009ABA8F /* Cyclone.h */,
+				33F60A9C14D34847009ABA8F /* Cyclone.o */,
+			);
+			path = cyclone;
+			sourceTree = "<group>";
+		};
+		33F60AAF14D35257009ABA8F /* drz80 */ = {
+			isa = PBXGroup;
+			children = (
+				33F60AB014D35257009ABA8F /* DrZ80.h */,
+				33F60AB114D35257009ABA8F /* DrZ80.o */,
+				33F60AB214D35257009ABA8F /* DrZ80.s */,
+			);
+			path = drz80;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -761,6 +801,8 @@
 				33B2336314C7459E009AF545 /* 2610intf.c in Sources */,
 				33B2336714C7459E009AF545 /* ym2610.c in Sources */,
 				33B2336814C748C6009AF545 /* z80.c in Sources */,
+				33F60AAE14D34847009ABA8F /* cyclone_interf.c in Sources */,
+				33F60AC014D35258009ABA8F /* drz80_interf.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -849,10 +891,13 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iNEOGEO/iNEOGEO-Prefix.pch";
+				GCC_THUMB_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				INFOPLIST_FILE = "iNEOGEO/iNEOGEO-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Classes/lib\"",
+					"\"$(SRCROOT)/Lib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -865,10 +910,13 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iNEOGEO/iNEOGEO-Prefix.pch";
+				GCC_THUMB_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				INFOPLIST_FILE = "iNEOGEO/iNEOGEO-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Classes/lib\"",
+					"\"$(SRCROOT)/Lib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

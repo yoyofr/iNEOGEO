@@ -33,7 +33,9 @@ static float b;
 static float c;
 static float d;
 
-static SDL_Surface *video_opengl;
+//static SDL_Surface *video_opengl;
+static SDL_Window *video_opengl;
+static SDL_GLContext ctx;
 static SDL_Surface *tex_opengl;
 static SDL_Rect glrectef;
 
@@ -51,7 +53,7 @@ blitter_opengl_init()
 //        if (load_glproc() == SDL_FALSE) return SDL_FALSE;
 
 	sdl_flags = (fullscreen?SDL_FULLSCREEN:0)| SDL_DOUBLEBUF | SDL_HWSURFACE
-    | SDL_HWPALETTE | SDL_OPENGL;// | SDL_RESIZABLE;
+    | SDL_HWPALETTE | SDL_OPENGL | SDL_RESIZABLE;
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 //    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 
@@ -81,11 +83,15 @@ blitter_opengl_init()
 	conf.res_x=width;
 	conf.res_y=height;
 	
-	video_opengl = SDL_SetVideoMode(width, height, 16, sdl_flags);
-    //video_opengl = (SDL_Surface*)SDL_CreateWindow(0, 0, 0, width, height,SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_SHOWN);
+//	video_opengl = SDL_SetVideoMode(width, height, 16, sdl_flags);
+    video_opengl = SDL_CreateWindow(0, 0, 0, width, height,SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	
 	if ( video_opengl == NULL)
 		return SDL_FALSE;
+    
+    ctx = SDL_GL_CreateContext(video_opengl);
+    
+    SDL_GetWindowSize(video_opengl, &width, &height);
 	
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -154,19 +160,21 @@ blitter_opengl_resize(int w,int h)
 
   sdl_flags = SDL_DOUBLEBUF | SDL_HWSURFACE | SDL_HWPALETTE | SDL_OPENGL | SDL_RESIZABLE;
 
-  video_opengl = SDL_SetVideoMode(w, h, 16, sdl_flags);
+  /*video_opengl = SDL_SetVideoMode(w, h, 16, sdl_flags);
 
   if ( video_opengl == NULL)
     return SDL_FALSE;
 
   glEnable(GL_TEXTURE_2D);
-  glViewport(0, 0, w, h);
+  glViewport(0, 0, w, h);*/
 
   return SDL_TRUE;
 }
 
 void 
 blitter_opengl_update() {
+    int width,height,rwidth,rheight;
+    float ratio;
     if (neffect == 0) {
         SDL_BlitSurface(buffer, &visible_area, tex_opengl, NULL);
         
@@ -190,6 +198,19 @@ blitter_opengl_update() {
         texcoords[2][0]=(float)0/512.0f; texcoords[2][1]=(float)(visible_area.h+visible_area.y)/256.0f;
         texcoords[3][0]=(float)(visible_area.w)/512.0f; texcoords[3][1]=(float)(visible_area.h+visible_area.y)/256.0f;
         
+
+        SDL_GetWindowSize(video_opengl, &width, &height);
+        
+        ratio=(float)width/(float)height;
+        if (ratio>4/3) {
+            rwidth=height*4/3;
+            rheight=height;
+        } else {
+            rwidth=width;
+            rheight=width*3/4;
+        }
+        
+        glViewport((width-rwidth)/2, height-rheight, rwidth, rheight);
         
         vertices[0][0]=-1; vertices[0][1]=1;
                     vertices[1][0]=1; vertices[1][1]=1;
@@ -210,6 +231,8 @@ blitter_opengl_update() {
         glColor4f(1,1,1,0.2f);
         /* Enable Vertex Pointer */
         glEnableClientState(GL_VERTEX_ARRAY);        
+            
+            
         for (int i=0;i<VSTICK_NB_BUTTON;i++) {
             vertices[0][0]=(float)(virtual_stick[i].x)/device_w;
             vertices[0][1]=(float)(virtual_stick[i].y)/device_h;
@@ -238,56 +261,21 @@ blitter_opengl_update() {
 		glEnable(GL_TEXTURE_2D);
         }
     } 
-    else
-    {		
-	SDL_BlitSurface(screen, &glrectef, tex_opengl, NULL);
 	
-        glBindTexture(GL_TEXTURE_2D, txtnumber);    /* Bind The Texture */
-
-        
-        glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 512, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, tex_opengl->pixels);
-        
-        /* Begin Drawing Quads, setup vertex and texcoord array pointers */
-        glVertexPointer(2, GL_FLOAT, 0, vertices);
-        glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
-        
-        /* Enable Vertex Pointer */
-        glEnableClientState(GL_VERTEX_ARRAY);
-        /* Enable Texture Coordinations Pointer */
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        texcoords[0][0]=0.0f; texcoords[0][1]=0.0f;
-        texcoords[1][0]=(float)visible_area.w/512.0f; texcoords[1][1]=0.0f;
-        texcoords[2][0]=0.0f; texcoords[2][1]=(float)visible_area.h/256.0f;
-        texcoords[3][0]=(float)visible_area.w/512.0f; texcoords[3][1]=(float)visible_area.h/256.0f;
-        
-        
-        vertices[0][0]=-1; vertices[0][1]=1;
-        vertices[1][0]=1; vertices[1][1]=1;
-        vertices[2][0]=-1; vertices[2][1]=-1;
-        vertices[3][0]=1; vertices[3][1]=-1;
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        /* Disable Vertex Pointer */
-        glDisableClientState(GL_VERTEX_ARRAY);
-        /* Disable Texture Coordinations Pointer */
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        
-        glBindTexture(GL_TEXTURE_2D, 0);    /* Bind The Texture */
-    }
-	
-    SDL_GL_SwapBuffers();	
+    SDL_GL_SwapWindow(video_opengl);
 }
 
 void
-blitter_opengl_close()
-{
+blitter_opengl_close() {
 	//if (screen != NULL)
 	//	SDL_FreeSurface(screen);
+    SDL_GL_DeleteContext(ctx);
+    SDL_DestroyWindow(video_opengl);
 }
 
 void
-blitter_opengl_fullscreen()
-{
-	SDL_WM_ToggleFullScreen(video_opengl);
+blitter_opengl_fullscreen() {
+//	SDL_WM_ToggleFullScreen(video_opengl);
 }
 
 #endif

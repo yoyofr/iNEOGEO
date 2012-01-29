@@ -25,6 +25,7 @@
 #endif
 
 #ifdef USE_GENERATOR68K
+
 #include <stdlib.h>
 
 #include "generator68k/generator.h"

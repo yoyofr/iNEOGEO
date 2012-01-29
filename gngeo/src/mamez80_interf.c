@@ -72,13 +72,12 @@ Uint8 mame_z80_readop_arg(Uint16 addr)
 
 void mame_z80_writeport16(Uint16 port, Uint8 value)
 {
-    //printf("Write port %d=%d\n",port,value);
     z80_port_write(port, value);
 }
 
 Uint8 mame_z80_readport16(Uint16 port)
 {
-    //printf("Read port %d\n",port);
+    
     return z80_port_read(port);
 }
 
@@ -252,9 +251,25 @@ void cpu_z80_init(void)
     z80_init_save_state();
 }
 
+void show_z80_state() {
+/*    printf("PC:%04X, AF:%04X, BC:%04X, DE:%04X, HL:%04X,\n\
+           SP:%04X, PCBase:%04X, SPBase:%04X, IX:%04X, IY:%04X,\n\
+           I:%04X, AF2:%04X, BC2:%04X, DE2:%04X, HL2:%04X,\n\
+           IRQ:%04X, IF:%04X, IM:%04X, IRQVector:%04X\n",
+           z80_get_reg(Z80_PC),z80_get_reg(Z80_AF),z80_get_reg(Z80_BC),z80_get_reg(Z80_DE),z80_get_reg(Z80_HL),
+           z80_get_reg(Z80_SP),0,0,z80_get_reg(Z80_IX),z80_get_reg(Z80_IY),
+           z80_get_reg(Z80_I),z80_get_reg(Z80_AF2),z80_get_reg(Z80_BC2),z80_get_reg(Z80_DE2),z80_get_reg(Z80_HL2),
+           z80_get_reg(Z80_IRQ_STATE),z80_get_reg(Z80_IFF1),z80_get_reg(Z80_IM),0);*/
+
+    printf("PC:%04X, A:%04X, F:%04X, BC:%04X, DE:%04X, HL:%04X\n",
+           z80_get_reg(Z80_PC),z80_get_reg(Z80_AF)>>16,z80_get_reg(Z80_AF)&0xFFFF,z80_get_reg(Z80_BC),z80_get_reg(Z80_DE),z80_get_reg(Z80_HL));
+}
+
+
+
 void cpu_z80_run(int nbcycle)
 {
-    //printf("%x\n",z80_get_reg(Z80_PC));
+//    printf("PC: %04X\n",z80_get_reg(Z80_PC));
     z80_execute(nbcycle);
 }
 void cpu_z80_nmi(void)

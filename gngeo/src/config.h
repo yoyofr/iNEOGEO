@@ -163,11 +163,30 @@
 /* Define if you have an x86_64 processor */
 /* #undef PROCESSOR_ADM64 */
 
+//#define TARGET_IPHONE_SIMULATOR 1
+
+#if TARGET_IPHONE_SIMULATOR
+/* Define to enable generator68k */
+#define USE_GENERATOR68K 1
+/* Define to enable mamez80 */
+#define USE_MAMEZ80 1
+#else
 /* Define if you have an ARM processor */
-/* #undef PROCESSOR_ARM */
+#define PROCESSOR_ARM 1
+/* Define to enable generator68k */
+//#define USE_GENERATOR68K 1
+/* Define to enable cyclone */
+#define USE_CYCLONE 1
+/* Define to enable drz80 */
+//#define USE_DRZ80 1
+/* Define to enable mamez80 */
+#define USE_MAMEZ80 1
+
+#endif
+
 
 /* Define if you have an x86 processor */
-#define PROCESSOR_INTEL 1
+//#define PROCESSOR_INTEL 1
 
 /* Define if you have a sparc processor */
 /* #undef PROCESSOR_SPARC */
@@ -181,20 +200,13 @@
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 /* #undef TM_IN_SYS_TIME */
 
-/* Define to enable cyclone */
-//#define USE_CYCLONE 1
 
-/* Define to enable drz80 */
-/* #undef USE_DRZ80 */
 
-/* Define to enable generator68k */
-#define USE_GENERATOR68K 1
+
 
 /* Define to use alternative opengl blitter */
 #define USE_GL2 1
 
-/* Define to enable mamez80 */
-#define USE_MAMEZ80 1
 
 /* Define to enable raze */
 /* #undef USE_RAZE */

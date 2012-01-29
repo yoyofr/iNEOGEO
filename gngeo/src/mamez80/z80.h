@@ -5,6 +5,9 @@
 #include <config.h>
 #endif
 
+#ifdef USE_MAMEZ80
+
+
 #ifndef WORDS_BIGENDIAN
 #define LSB_FIRST
 #endif
@@ -159,3 +162,4 @@ extern unsigned DasmZ80(char *buffer, unsigned pc);
 
 #endif
 
+#endif

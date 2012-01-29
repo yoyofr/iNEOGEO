@@ -82,6 +82,8 @@
 #include <string.h>
 #include "z80.h"
 
+#ifdef USE_MAMEZ80
+
 #ifdef Z80_MSX
 #include "z80_msx.h"
 #endif
@@ -4600,3 +4602,4 @@ unsigned z80_dasm( char *buffer, unsigned pc )
 #endif
 }
 
+#endif

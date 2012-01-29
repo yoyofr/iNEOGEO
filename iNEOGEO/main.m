@@ -72,7 +72,7 @@ void get_device_res() {
 int main(int argc, char *argv[])
 {
 #if 1
-    char *gnargv[6]={"gngeo","--blitter=opengl","-f","viewpoin","--showfps"};
+    char *gnargv[6]={"gngeo","--blitter=opengl","-f","--bench","viewpoin","--showfps"};
     
 /*    iCadeRView=[[iCadeReaderView alloc] initWithFrame:CGRectZero];
     UIWindow *window=[[UIApplication sharedApplication] keyWindow];		

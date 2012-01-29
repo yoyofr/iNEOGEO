@@ -162,6 +162,7 @@ static char *romlist[] = {
 	"gpilots",
 	"gpilotsh",
 	"gururin",
+    "ironclad",
 	"irrmaze",
 	"janshin",
 	"jockeygp",
@@ -868,7 +869,7 @@ static int load_state_action(GN_MENU_ITEM *self, void *param) {
 	}
 
 	//slot_img=load_state_img(conf.game,slot);
-	tmps = load_state_img(conf.game, slot);
+	tmps = load_state_img(conf.game, slot);    
 	slot_img = SDL_ConvertSurface(tmps, menu_buf->format, SDL_SWSURFACE);
 
 	while (1) {

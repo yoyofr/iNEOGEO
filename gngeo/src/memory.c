@@ -46,7 +46,7 @@ void neogeo_sound_irq(int irq) {
 	//printf("neogeo_sound_end %d\n",irq);
 }
 
-static __inline__ Uint16 read_neo_control(void) {
+__inline__ Uint16 read_neo_control(void) {
 	unsigned int scan;
 
 	if (!conf.raster) {
