@@ -60,7 +60,8 @@ t_touch_area virtual_stick_iphone_portrait[VSTICK_NB_BUTTON]={
     {GN_START,      270,         240,              50,50,0xFF,0xFF,0xFF,0},
     {GN_SELECT_COIN,195,         240,              50,50,0xFF,0xFF,0xFF,0},
     {GN_MENU_KEY,     0,            240,              50,50,0xFF,0xFF,0xFF,0},
-    {GN_TURBO,        75,            240,             50,50,0xFF,0xFF,0xFF,0}};
+    {GN_TURBO,        75,            240,             50,50,0xFF,0xFF,0xFF,0}
+};
 
 
 t_touch_area virtual_stick_ipad_landscape[VSTICK_NB_BUTTON]={
@@ -462,7 +463,8 @@ int handle_event(void) {
                     joy_state[0][GN_DOWNRIGHT]=0;
                     joy_state[0][GN_UPLEFT]=0;
                     joy_state[0][GN_DOWNLEFT]=0;
-                } else {
+                } 
+            {
                     
                     for (int i=0;i<VSTICK_NB_BUTTON;i++) 
                         if (virtual_stick[i].finger_id==event.tfinger.fingerId) {
