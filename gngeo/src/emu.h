@@ -89,6 +89,8 @@ struct {
 
     int p1_hotkey[4];
     int p2_hotkey[4];
+    
+    int rendermode;
 } conf;
 
 enum {
@@ -146,7 +148,8 @@ void neogeo_reset(void);
 
 /* LOG generation */
 #define GNGEO_LOG(...)
-#define DEBUG_LOG printf
+#define DEBUG_LOG 
+//printf
 //#define GNGEO_LOG printf
 
 #define TRUE 1

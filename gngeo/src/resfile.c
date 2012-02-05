@@ -103,7 +103,7 @@ SDL_Surface *res_load_stbi(char *bmp) {
 
 	data = stbi_load_from_memory(buffer, size, &x, &y, &comp, 0);
 
-	printf("STBILOAD %p %d %d %d %d\n", data, x, y, comp, x * comp);
+//	printf("STBILOAD %p %d %d %d %d\n", data, x, y, comp, x * comp);
 	switch (comp) {
 #ifdef WORDS_BIGENDIAN
 	case 3:

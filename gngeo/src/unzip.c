@@ -337,7 +337,7 @@ uint8_t *gn_unzip_file_malloc(PKZIP *zf, char *filename, uint32_t file_crc,
 		readed = stbi_zlib_decode_noheader_stream(z->zb, data, z->uncsize);
 #else
 		readed=gn_unzip_fread(z,data,z->uncsize);
-		printf("Readed=%d \n",readed);
+		//printf("Readed=%d \n",readed);
 #endif
 	} else
 		readed = fread(data, 1, z->uncsize, z->f);

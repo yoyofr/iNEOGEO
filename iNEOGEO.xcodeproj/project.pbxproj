@@ -289,6 +289,8 @@
 		33B233D914CB6529009AF545 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		33B233DB14CB653B009AF545 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		33B233DD14CB6541009AF545 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		33B262B114DBD415009F792A /* wiimote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wiimote.h; sourceTree = "<group>"; };
+		33B2630114DE6B46009F792A /* btstack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = btstack.h; sourceTree = "<group>"; };
 		33BB810B14D54FA600EA4B32 /* libBTstack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libBTstack.dylib; path = Lib/libBTstack.dylib; sourceTree = "<group>"; };
 		33F60A9B14D34847009ABA8F /* Cyclone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cyclone.h; sourceTree = "<group>"; };
 		33F60A9C14D34847009ABA8F /* Cyclone.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = Cyclone.o; sourceTree = "<group>"; };
@@ -373,6 +375,7 @@
 		33B230B814C6AE3C009AF545 /* iNEOGEO */ = {
 			isa = PBXGroup;
 			children = (
+				33B262B014DBD415009F792A /* Include */,
 				339E992614CCAAD5000B2C79 /* Classes */,
 				33B2336B14C74B0C009AF545 /* Resources */,
 				33B230F614C74366009AF545 /* gngeo */,
@@ -616,6 +619,15 @@
 			path = Resources/roms;
 			sourceTree = SOURCE_ROOT;
 		};
+		33B262B014DBD415009F792A /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				33B262B114DBD415009F792A /* wiimote.h */,
+				33B2630114DE6B46009F792A /* btstack.h */,
+			);
+			path = Include;
+			sourceTree = SOURCE_ROOT;
+		};
 		33F60A9914D34847009ABA8F /* cyclone */ = {
 			isa = PBXGroup;
 			children = (
@@ -834,6 +846,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -844,7 +857,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = "";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -854,6 +867,7 @@
 					"../SDL-1.3/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -865,10 +879,11 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = "";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -879,6 +894,7 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

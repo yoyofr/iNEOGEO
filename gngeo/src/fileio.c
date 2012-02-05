@@ -100,7 +100,7 @@ bool check_dir(char *dir_name) {
     return true;
 }
 
-/* return a char* to $HOME/.gngeo/ 
+/* return a char* to $HOME/Documents/ 
    DO NOT free it!
  */
 #ifdef EMBEDDED_FS
@@ -116,7 +116,7 @@ char *get_gngeo_dir(void) {
 #if defined (__AMIGA__)
     int len = strlen("/PROGDIR/data/") + 1;
 #else
-    int len = strlen(getenv("HOME")) + strlen("/.gngeo/") + 1;
+    int len = strlen(getenv("HOME")) + strlen("/Documents/") + 1;
 #endif
     if (!filename) {
         filename = malloc(len * sizeof (char));
@@ -124,7 +124,7 @@ char *get_gngeo_dir(void) {
 #if defined (__AMIGA__)
         sprintf(filename, "/PROGDIR/data/");
 #else
-        sprintf(filename, "%s/.gngeo/", getenv("HOME"));
+        sprintf(filename, "%s/Documents/", getenv("HOME"));
 #endif
     }
     check_dir(filename);
@@ -191,7 +191,7 @@ void save_nvram(char *name) {
     FILE *f;
     int len = strlen(name) + strlen(gngeo_dir) + 4; /* ".nv\0" => 4 */
 
-    //strlen(name) + strlen(getenv("HOME")) + strlen("/.gngeo/") + 4;
+    //strlen(name) + strlen(getenv("HOME")) + strlen("/Documents/") + 4;
     int i;
     //    printf("Save nvram %s\n",name);
     for (i = 0xffff; i >= 0; i--) {

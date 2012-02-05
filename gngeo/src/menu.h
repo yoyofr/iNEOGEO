@@ -41,6 +41,7 @@ typedef struct GN_MENU_ITEM {
         void *arg;
 	int (*action)(struct GN_MENU_ITEM *self,void *param);
 	void (*draw)(struct GN_MENU_ITEM *self);
+    SDL_Rect rect;
 }GN_MENU_ITEM;
 
 typedef struct GN_MENU {

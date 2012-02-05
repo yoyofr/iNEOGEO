@@ -658,9 +658,9 @@ void draw_screen(void) {
 		SDL_textout(buffer, visible_area.x, visible_area.h + visible_area.y - 13, conf.message);
 		conf.do_message--;
 	}
-	if (conf.show_fps)
+	if (conf.show_fps) {
 		SDL_textout(buffer, visible_area.x+8, visible_area.y, fps_str);
-
+    }
 
 	screen_update();
 }

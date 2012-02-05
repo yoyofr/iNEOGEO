@@ -620,7 +620,7 @@ void load_cmc42_table(void) {
 /*
 	FILE *f;
 	type0_t03=malloc(0x950);
-	f=fopen("/home/mathieu/.gngeo/cmc42.xor","rb");
+	f=fopen("/home/mathieu/Documents/cmc42.xor","rb");
 	fread(type0_t03,0xB00,1,f);
 	fclose(f);
 */
@@ -638,7 +638,7 @@ void load_cmc50_table(void) {
 /*
 	FILE *f;
 	type0_t03=malloc(0xB00);
-	f=fopen("/home/mathieu/.gngeo/cmc50.xor","rb");
+	f=fopen("/home/mathieu/Documents/cmc50.xor","rb");
 	fread(type0_t03,0xB00,1,f);
 	fclose(f);
 */

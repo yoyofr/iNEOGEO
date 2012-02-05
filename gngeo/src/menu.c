@@ -58,6 +58,15 @@
 #define ROOTPATH ""
 #endif
 
+
+/**************************/
+extern int num_of_joys;
+extern int icade_detected;
+extern void startWiimoteDetection(void);
+extern void stopWiimoteDetection(void);
+
+/**************************/
+
 typedef struct GNFONT {
 	SDL_Surface *bmp;
 	Uint8 ysize;
@@ -72,6 +81,7 @@ static SDL_Surface *back;
 static GNFONT *sfont;
 static GNFONT *mfont;
 static SDL_Surface *gngeo_logo, *gngeo_mask, *pbar_logo;
+static SDL_Surface *wiimote_logo,*icade_logo;
 
 static SDL_Surface *arrow_l, *arrow_r, *arrow_u, *arrow_d;
 static int interp;
@@ -433,13 +443,14 @@ void draw_string(SDL_Surface *dst, GNFONT *f, int x, int y, char *str) {
 	if (y == ALIGN_UP) y = MENU_TEXT_Y;
 	if (y == ALIGN_DOWN) y = (MENU_TEXT_Y_END - f->ysize);
 	if (y == ALIGN_CENTER) y = (MENU_TEXT_Y + (MENU_TEXT_Y_END - MENU_TEXT_Y - f->ysize) / 2);
-
+    
 	drect.x = x;
 	drect.y = y;
 	drect.w = 32;
 	drect.h = f->bmp->h;
 	srect.h = f->bmp->h;
 	srect.y = 0;
+
 	for (i = 0; i < strlen(str); i++) {
 		switch (str[i]) {
 			case ' ': /* Optimize space */
@@ -462,6 +473,7 @@ void draw_string(SDL_Surface *dst, GNFONT *f, int x, int y, char *str) {
 				break;
 		}
 	}
+    
 }
 
 static void init_back(void) {
@@ -513,11 +525,34 @@ static void draw_arrow(int type, int x, int y) {
 	}
 }
 
+static void draw_joylogo(int type, int x,int y) {
+    SDL_Rect dst_r;
+	switch (type) {
+        case 0:
+            dst_r.x=x;
+            dst_r.y=y-15;
+            dst_r.w=15;
+            dst_r.h=30;
+        	SDL_BlitSurface(wiimote_logo, NULL, menu_buf, &dst_r);
+			break;
+        case 1:
+            dst_r.x=x;
+            dst_r.y=y-26;
+            dst_r.w=26;
+            dst_r.h=32;
+        	SDL_BlitSurface(icade_logo, NULL, menu_buf, &dst_r);
+			break;
+	}
+}
+
 int gn_init_skin(void) {
 	//menu_buf = SDL_CreateRGBSurface(SDL_SWSURFACE, 352, 256, 32, 0xFF0000, 0xFF00, 0xFF, 0x0);
 	menu_buf = SDL_CreateRGBSurface(SDL_SWSURFACE, 352, 256, 16, 0xF800, 0x7E0, 0x1F, 0);
 	//	menu_back= SDL_CreateRGBSurface(SDL_SWSURFACE, 352, 256, 32, 0xFF0000, 0xFF00, 0xFF, 0x0);
 	menu_back = SDL_CreateRGBSurface(SDL_SWSURFACE, 352, 256, 16, 0xF800, 0x7E0, 0x1F, 0);
+    
+    wiimote_logo = res_load_stbi("skin/wiimote.tga");
+    icade_logo = res_load_stbi("skin/icade.tga");
 
 	back = res_load_stbi("skin/back.tga");
 	sfont = load_font("skin/font_small.tga");
@@ -535,7 +570,7 @@ int gn_init_skin(void) {
 	init_back();
 
 	if (!back || !sfont || !mfont || !arrow_r || !arrow_l || !arrow_u || !arrow_d ||
-			!gngeo_logo || !menu_buf) return false;
+			!gngeo_logo || !menu_buf || !wiimote_logo|| !icade_logo) return false;
 	return true;
 }
 
@@ -743,8 +778,6 @@ static void draw_menu(GN_MENU *m) {
 	cx++;
 	if (cx > 25) cx = 0;
 
-
-
 	nb_item = (MENU_TEXT_Y_END - MENU_TEXT_Y) / fnt->ysize - 1;
 
 	draw_back();
@@ -810,6 +843,26 @@ static void draw_menu(GN_MENU *m) {
 		}
 		j++;
 	}
+    
+    //draw joystick if connected
+    //wiimote
+    
+    if (num_of_joys) {
+        if (num_of_joys>=1) {
+            draw_joylogo(0,28,220);
+            draw_string(menu_buf, mfont, 28+12, 220-18, "1P");
+        }
+        if (num_of_joys>=2) {
+            draw_joylogo(0,290,220);
+            draw_string(menu_buf, mfont, 290+12, 220-18, "2P");
+        }
+    }
+    if (icade_detected) {
+        draw_joylogo(1,28,50);
+        draw_string(menu_buf, mfont, 28+18, 50-32, "1P");
+        
+    }
+    
 	SDL_BlitSurface(menu_buf, NULL, buffer, NULL);
 	screen_update();
 	frame_skip(0);
@@ -995,6 +1048,9 @@ int menu_event_handling(struct GN_MENU *self) {
 	GN_MENU_ITEM *mi;
 	int a;
 	LIST *l;
+    int rx,ry,rwidth,rheight;
+    float ratio;
+    
 	switch (wait_event()) {
 		case GN_UP:
 			if (self->current > 0)
@@ -1387,6 +1443,20 @@ static int toggle_wide(GN_MENU_ITEM *self, void *param) {
 	return MENU_STAY;
 }
 
+static int toggle_rendermode(GN_MENU_ITEM *self, void *param) {
+//	self->val++;
+//    if (self->val>2) self->val=0;
+    conf.rendermode++;
+    if (conf.rendermode>2) conf.rendermode=0;
+    self->val= conf.rendermode;
+	cf_item_has_been_changed(cf_get_item_by_name("rendermode"));
+	CF_VAL(cf_get_item_by_name("rendermode")) = self->val;
+    
+    sprintf(self->str, "%d", conf.rendermode);
+	
+	screen_reinit();
+	return MENU_STAY;
+}
 static int toggle_vsync(GN_MENU_ITEM *self, void *param) {
 
 	self->val = 1 - self->val;
@@ -1569,16 +1639,19 @@ static void reset_menu_option(void) {
 	GN_MENU_ITEM *gitem;
 	//gitem=gn_menu_get_item_by_name(option_menu,"Fullscreen");
 	//if (gitem) gitem->val = CF_BOOL(cf_get_item_by_name("fullscreen"));
-	RESET_BOOL("Fullscreen","fullscreen");
-	RESET_BOOL("Vsync","vsync");
+	gitem=gn_menu_get_item_by_name(option_menu,"Rendermode");
+	sprintf(gitem->str, "%d", conf.rendermode);
+    
+//    RESET_BOOL("Fullscreen","fullscreen");
+//	RESET_BOOL("Vsync","vsync");
 	RESET_BOOL("Auto Frame Skip","autoframeskip");
-	RESET_BOOL("Sleep while idle","sleepidle");
+//	RESET_BOOL("Sleep while idle","sleepidle");
 	RESET_BOOL("Show FPS","showfps");
 #ifdef PANDORA
 	RESET_BOOL("16/9","wide");
 #endif
-	gitem=gn_menu_get_item_by_name(option_menu,"Effect");
-	gitem->str = CF_STR(cf_get_item_by_name("effect"));
+/*	gitem=gn_menu_get_item_by_name(option_menu,"Effect");
+	gitem->str = CF_STR(cf_get_item_by_name("effect"));*/
 
 	gitem=gn_menu_get_item_by_name(option_menu,"Sample Rate");
 	if (conf.sound)
@@ -1635,41 +1708,46 @@ void gn_init_menu(void) {
 
 	option_menu = create_menu("Options", MENU_SMALL, NULL, NULL);
 
-
-	gitem = gn_menu_create_item("Fullscreen", MENU_CHECK, toggle_fullscreen, NULL);
-	gitem->val = CF_BOOL(cf_get_item_by_name("fullscreen"));
+    gitem = gn_menu_create_item("Rendermode", MENU_LIST, toggle_rendermode, NULL);
+	gitem->str = malloc(2);
+    sprintf(gitem->str, "%d", conf.rendermode);
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
 	option_menu->nb_elem++;
+
+/*	gitem = gn_menu_create_item("Fullscreen", MENU_CHECK, toggle_fullscreen, NULL);
+	gitem->val = CF_BOOL(cf_get_item_by_name("fullscreen"));
+	option_menu->item = list_append(option_menu->item, (void*) gitem);
+	option_menu->nb_elem++;*/
 #ifdef PANDORA
 	gitem = gn_menu_create_item("16/9", MENU_CHECK, toggle_wide, NULL);
 	gitem->val = CF_BOOL(cf_get_item_by_name("wide"));
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
 	option_menu->nb_elem++;
 #endif
-	gitem = gn_menu_create_item("Vsync", MENU_CHECK, toggle_vsync, NULL);
+/*	gitem = gn_menu_create_item("Vsync", MENU_CHECK, toggle_vsync, NULL);
 	gitem->val = CF_BOOL(cf_get_item_by_name("vsync"));
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
-	option_menu->nb_elem++;
+	option_menu->nb_elem++;*/
 
 	gitem = gn_menu_create_item("Auto Frame Skip", MENU_CHECK, toggle_autoframeskip, NULL);
 	gitem->val = CF_BOOL(cf_get_item_by_name("autoframeskip"));
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
 	option_menu->nb_elem++;
 
-	gitem = gn_menu_create_item("Sleep while idle", MENU_CHECK, toggle_sleepidle, NULL);
+/*	gitem = gn_menu_create_item("Sleep while idle", MENU_CHECK, toggle_sleepidle, NULL);
 	gitem->val = CF_BOOL(cf_get_item_by_name("sleepidle"));
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
-	option_menu->nb_elem++;
+	option_menu->nb_elem++;*/
 
 	gitem = gn_menu_create_item("Show FPS", MENU_CHECK, toggle_showfps, NULL);
 	gitem->val = CF_BOOL(cf_get_item_by_name("showfps"));
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
 	option_menu->nb_elem++;
 
-	gitem = gn_menu_create_item("Effect", MENU_LIST, change_effect, NULL);
+/*	gitem = gn_menu_create_item("Effect", MENU_LIST, change_effect, NULL);
 	gitem->str = CF_STR(cf_get_item_by_name("effect"));
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
-	option_menu->nb_elem++;
+	option_menu->nb_elem++;*/
 
 	gitem = gn_menu_create_item("Sample Rate", MENU_LIST, change_samplerate, NULL);
 	gitem->str = malloc(32);
@@ -1707,6 +1785,9 @@ Uint32 run_menu(void) {
 		gn_init_menu();
 	}
     
+    startWiimoteDetection();
+
+    
 	init_back();
 
 	reset_event();
@@ -1727,12 +1808,17 @@ Uint32 run_menu(void) {
 
 	while (1) {
 		main_menu->draw(main_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
-		if ((a = main_menu->event_handling(main_menu)) > 0)
+		if ((a = main_menu->event_handling(main_menu)) > 0) {
 			//reset_event();
+            stopWiimoteDetection();
 			return a;
+        }
 	}
 	//reset_event();
 	if (conf.game == NULL) return 2; /* Exit */
+    
+    stopWiimoteDetection();
+    
 	return 0;
 }
 

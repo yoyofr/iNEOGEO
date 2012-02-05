@@ -229,10 +229,10 @@ SDL_bool screen_init() {
 	/* Interpolation surface */
 	blend = SDL_CreateRGBSurface(SDL_SWSURFACE/*(conf.hw_surface ? SDL_HWSURFACE : SDL_SWSURFACE)*/,
 			352, 256, 16, 0xF800, 0x7E0, 0x1F, 0);
-	printf("CURSOR=%d\n", SDL_ShowCursor(SDL_QUERY));
+//	printf("CURSOR=%d\n", SDL_ShowCursor(SDL_QUERY));
 	if (SDL_ShowCursor(SDL_QUERY) == 1)
 		SDL_ShowCursor(SDL_DISABLE);
-	printf("CURSOR=%d\n", SDL_ShowCursor(SDL_QUERY));
+//	printf("CURSOR=%d\n", SDL_ShowCursor(SDL_QUERY));
 	return SDL_TRUE;
 }
 
@@ -286,10 +286,10 @@ void screen_change_blitter_and_effect(void) {
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 
 
-	printf("CURSOR=%d\n", SDL_ShowCursor(SDL_QUERY));
+//	printf("CURSOR=%d\n", SDL_ShowCursor(SDL_QUERY));
 	if (SDL_ShowCursor(SDL_QUERY) == 1)
 		SDL_ShowCursor(SDL_DISABLE);
-	printf("CURSOR=%d\n", SDL_ShowCursor(SDL_QUERY));
+//	printf("CURSOR=%d\n", SDL_ShowCursor(SDL_QUERY));
 }
 
 SDL_bool screen_reinit(void) {

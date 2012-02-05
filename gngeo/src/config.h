@@ -1,5 +1,4 @@
-/* config.h.  Generated from config.h.in by configure.  */
-/* config.h.in.  Generated from configure.in by autoheader.  */
+//#define TARGET_IPHONE_SIMULATOR 1
 
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
@@ -162,8 +161,6 @@
 
 /* Define if you have an x86_64 processor */
 /* #undef PROCESSOR_ADM64 */
-
-//#define TARGET_IPHONE_SIMULATOR 1
 
 #if TARGET_IPHONE_SIMULATOR
 /* Define to enable generator68k */

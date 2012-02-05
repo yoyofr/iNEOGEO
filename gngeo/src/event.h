@@ -5,14 +5,18 @@
 
 typedef enum {
 	GN_NONE=0,
-	GN_A,
+    GN_RIGHT,	
+    GN_UPRIGHT,
+    GN_UP,
+	GN_UPLEFT,
+    GN_LEFT,
+	GN_DOWNLEFT,    
+	GN_DOWN,
+	GN_DOWNRIGHT,
+    GN_A,
 	GN_B,
 	GN_C,
 	GN_D,
-	GN_UP,
-	GN_DOWN,
-	GN_LEFT,
-	GN_RIGHT,
 	GN_START,
 	GN_SELECT_COIN,
 	GN_MENU_KEY,
@@ -20,16 +24,12 @@ typedef enum {
 	GN_HOTKEY2,
 	GN_HOTKEY3,
 	GN_HOTKEY4,
-    GN_UPRIGHT,
-    GN_DOWNRIGHT,
-    GN_UPLEFT,
-    GN_DOWNLEFT,
     GN_TURBO,
 	GN_MAX_KEY,
 }GNGEO_BUTTON;
 
-#define VSTICK_NB_BUTTON 16
-typedef struct {int button_id,x,y,w,h;SDL_FingerID finger_id;} t_touch_area;
+#define VSTICK_NB_BUTTON 8
+typedef struct {int button_id,x,y,w,h;Uint8 r,g,b;SDL_FingerID finger_id;} t_touch_area;
 
 struct BUT_MAP {
 	Uint8 player; /* 0=none 1=p1 2=p2 3=both */

@@ -182,16 +182,16 @@ static char **read_str_array(char *val, int *size) {
 		if (val[i] == ',') nb_elem++;
 		i++;
 	}
-	printf("%s :NB elem %d\n", val, nb_elem);
+//	printf("%s :NB elem %d\n", val, nb_elem);
 	tab = malloc(nb_elem * sizeof (char*));
 	if (!tab) return NULL;
 
 	v = strtok(val, ",");
-	printf("V1=%s\n", v);
+//	printf("V1=%s\n", v);
 	for (i = 0; i < nb_elem; i++) {
 		tab[i] = strdup(v);
 		v = strtok(NULL, ",");
-		printf("V%d=%s\n", i, v);
+//		printf("V%d=%s\n", i, v);
 	}
 	*size = nb_elem;
 	return tab;
@@ -419,7 +419,7 @@ void cf_init(void) {
 	cf_create_bool_item("vsync", "Synchronise the display with VBLANK", 0, false);
 	cf_create_bool_item("autoframeskip", "Enable auto frameskip", 0, true);
 	cf_create_bool_item("fullscreen", "Start gngeo in fullscreen", 'f', false);
-	
+	cf_create_int_item("rendermode", "Rendering mode (x)", "x", 0, 0);
 #endif
 	cf_create_bool_item("pal", "Use PAL timing (buggy)", 'P', false);
 	cf_create_bool_item("screen320", "Use 320x224 output screen (instead 304x224)", 0, false);
@@ -543,9 +543,9 @@ bool cf_save_file(char *filename, int flags) {
 		conf_file = (char *) alloca(len * sizeof (char));
 		sprintf(conf_file, "/PROGDIR/data/gngeorc");
 #else /* POSIX */
-		int len = strlen("gngeorc") + strlen(getenv("HOME")) + strlen("/.gngeo/") + 1;
+		int len = strlen("gngeorc") + strlen(getenv("HOME")) + strlen("/Documents/") + 1;
 		conf_file = (char *) alloca(len * sizeof (char));
-		sprintf(conf_file, "%s/.gngeo/gngeorc", getenv("HOME"));
+		sprintf(conf_file, "%s/Documents/gngeorc", getenv("HOME"));
 #endif
 	}
 	conf_file_dst = alloca(strlen(conf_file) + 4);
@@ -685,7 +685,7 @@ void cf_reset_to_default(void) {
 }
 
 bool cf_open_file(char *filename) {
-	/* if filename==NULL, we use the default one: $HOME/.gngeo/gngeorc */
+	/* if filename==NULL, we use the default one: $HOME/Documents/gngeorc */
 	char *conf_file = filename;
 	FILE *f;
 	int i = 0;
@@ -704,9 +704,9 @@ bool cf_open_file(char *filename) {
 		conf_file = (char *) alloca(len * sizeof (char));
 		sprintf(conf_file, "/PROGDIR/data/gngeorc");
 #else
-		int len = strlen("gngeorc") + strlen(getenv("HOME")) + strlen("/.gngeo/") + 1;
+		int len = strlen("gngeorc") + strlen(getenv("HOME")) + strlen("/Documents/") + 1;
 		conf_file = (char *) alloca(len * sizeof (char));
-		sprintf(conf_file, "%s/.gngeo/gngeorc", getenv("HOME"));
+		sprintf(conf_file, "%s/Documents/gngeorc", getenv("HOME"));
 #endif
 	}
 	if ((f = fopen(conf_file, "rb")) == 0) {
@@ -729,7 +729,7 @@ bool cf_open_file(char *filename) {
 		//printf("%s|%s|\n",name,val);
 		cf = cf_get_item_by_name(name);
 		if (cf && !(cf->flags & CF_SETBYCMD) && (!cf->modified)) {
-			printf("Option %s\n",cf->name);
+//			printf("Option %s\n",cf->name);
 			switch (cf->type) {
 				case CFT_INT:
 					CF_VAL(cf) = atoi(val);
@@ -852,11 +852,11 @@ char* cf_parse_cmd_line(int argc, char *argv[]) {
 #endif
 	while ((c = getopt_long(argc, argv, shortopt, longopt, &option_index)) != EOF) {
 		//if (c != 0) {
-			printf("c=%d\n",c);
+//			printf("c=%d\n",c);
 			cf = cf_get_item_by_val(c&0xFFF);
 			if (cf) {
 				cf->flags |= CF_SETBYCMD;
-				printf("flags %s set on cmd line\n", cf->name);
+//				printf("flags %s set on cmd line\n", cf->name);
 				switch (cf->type) {
 
 					case CFT_INT:

@@ -65,9 +65,12 @@ extern bool fatInitDefault(void);
 #ifdef __IOS__
 extern t_touch_area *virtual_stick;
 extern int virtual_stick_on;
-extern t_touch_area virtual_stick_iphone[VSTICK_NB_BUTTON];
+extern t_touch_area virtual_stick_iphone_landscape[VSTICK_NB_BUTTON];
+extern t_touch_area virtual_stick_iphone_portrait[VSTICK_NB_BUTTON];
 extern t_touch_area virtual_stick_ipad_landscape[VSTICK_NB_BUTTON];
+extern t_touch_area virtual_stick_ipad_portrait[VSTICK_NB_BUTTON];
 extern int device_isIpad;
+extern int cur_width,cur_height;
 #endif
 
 void calculate_hotkey_bitmasks()
@@ -132,7 +135,7 @@ void init_sdl(void /*char *rom_name*/) {
     fontbuf = SDL_CreateRGBSurfaceFrom(font_image.pixel_data, font_image.width, font_image.height
 				       , 24, font_image.width * 3, 0xFF0000, 0xFF00, 0xFF, 0);
     SDL_SetColorKey(fontbuf,SDL_SRCCOLORKEY,SDL_MapRGB(fontbuf->format,0xFF,0,0xFF));
-    fontbuf=SDL_DisplayFormat(fontbuf);
+    //fontbuf=SDL_DisplayFormat(fontbuf);
     icon = SDL_CreateRGBSurfaceFrom(gngeo_icon.pixel_data, gngeo_icon.width,
 				    gngeo_icon.height, gngeo_icon.bytes_per_pixel*8,
 				    gngeo_icon.width * gngeo_icon.bytes_per_pixel,
@@ -154,15 +157,17 @@ static void catch_me(int signo) {
 int gnmain(int argc, char *argv[])
 {
     char *rom_name;
-
+    printf("yo\n");
 //	signal(SIGSEGV, catch_me);
     virtual_stick_on=1;
     
     if (device_isIpad) {
         virtual_stick=virtual_stick_ipad_landscape;
+        
     } else {
-        virtual_stick=virtual_stick_iphone;
+        virtual_stick=virtual_stick_iphone_landscape;        
     }
+
 
     cf_init(); /* must be the first thing to do */
     cf_init_cmd_line();
