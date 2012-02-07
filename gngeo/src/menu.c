@@ -1809,12 +1809,12 @@ Uint32 run_menu(void) {
 	while (1) {
 		main_menu->draw(main_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
 		if ((a = main_menu->event_handling(main_menu)) > 0) {
-			//reset_event();
+			reset_event();
             stopWiimoteDetection();
 			return a;
         }
 	}
-	//reset_event();
+	reset_event();
 	if (conf.game == NULL) return 2; /* Exit */
     
     stopWiimoteDetection();

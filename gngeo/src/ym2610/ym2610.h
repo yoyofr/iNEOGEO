@@ -42,9 +42,9 @@ void YM2610Update_stream(int length);
 void YM2610Update_SoundTest(int p);
 #endif
 
-#ifdef SAVE_STATE
-STATE_SAVE( ym2610 );
-STATE_LOAD( ym2610 );
-#endif
+//#ifdef SAVE_STATE
+//void ym2610_STATE_SAVE(gzFile *gzf);
+//void ym2610_STATE_LOAD(gzFile *gzf);
+//#endif
 
 #endif /* _YM2610_H_ */

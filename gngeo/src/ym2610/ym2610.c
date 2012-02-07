@@ -3313,135 +3313,140 @@ next_frame:
 
 
 void ym2610_mkstate(gzFile *gzf,int mode) {
-	mkstate_data(gzf, &YM2610, sizeof (YM2610), mode);
+/*    FM_ST fmst;
+	memcpy(&fmst,&(YM2610.OPN.ST),sizeof(FM_ST));
+    mkstate_data(gzf, &YM2610, sizeof (YM2610), mode);
+    if (mode==STREAD) {
+        memcpy(&(YM2610.OPN.ST),&fmst,sizeof(FM_ST));
+    }*/
+    if (mode==STWRITE) ym2610_STATE_SAVE(gzf);
+    else ym2610_STATE_LOAD(gzf);
 }
 
-#ifdef SAVE_STATE
+//#ifdef SAVE_STATE
 
-STATE_SAVE( ym2610 )
-{
+void ym2610_STATE_SAVE(gzFile *gzf) {
 	int slot, ch;
 
-	state_save_byte(YM2610.regs, 512);
+	mkstate_data(gzf,YM2610.regs, 512,STWRITE);
 
-	state_save_double(&YM2610.OPN.ST.BusyExpire, 1);
-	state_save_byte(&YM2610.OPN.ST.address, 1);
-	state_save_byte(&YM2610.OPN.ST.irq, 1);
-	state_save_byte(&YM2610.OPN.ST.irqmask, 1);
-	state_save_byte(&YM2610.OPN.ST.status, 1);
-	state_save_long(&YM2610.OPN.ST.mode, 1);
-	state_save_byte(&YM2610.OPN.ST.prescaler_sel, 1);
-	state_save_byte(&YM2610.OPN.ST.fn_h, 1);
-	state_save_long(&YM2610.OPN.ST.TA, 1);
-	state_save_long(&YM2610.OPN.ST.TAC, 1);
-	state_save_byte(&YM2610.OPN.ST.TB, 1);
-	state_save_long(&YM2610.OPN.ST.TBC, 1);
+	mkstate_data(gzf,&YM2610.OPN.ST.BusyExpire,sizeof(double),STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.address, 1,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.irq, 1,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.irqmask, 1,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.status, 1,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.mode, 4,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.prescaler_sel, 1,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.fn_h, 1,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.TA, 4,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.TAC, 4,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.TB, 1,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.ST.TBC, 4,STWRITE);
 
 	for (ch = 0; ch < 6; ch++)
 	{
-		state_save_long(YM2610.CH[ch].op1_out, 2);
-		state_save_long(&YM2610.CH[ch].fc, 1);
+		mkstate_data(gzf,YM2610.CH[ch].op1_out, 8,STWRITE);
+		mkstate_data(gzf,&YM2610.CH[ch].fc, 4,STWRITE);
 
 		for (slot = 0; slot < 4; slot++)
 		{
 			FM_SLOT *SLOT = &YM2610.CH[ch].SLOT[slot];
 
-			state_save_long(&SLOT->phase, 1);
-			state_save_byte(&SLOT->state, 1);
-			state_save_long(&SLOT->volume, 1);
+			mkstate_data(gzf,&SLOT->phase, 4,STWRITE);
+			mkstate_data(gzf,&SLOT->state, 1,STWRITE);
+			mkstate_data(gzf,&SLOT->volume, 4,STWRITE);
 		}
 	}
 
-	state_save_long(YM2610.OPN.SL3.fc, 3);
-	state_save_byte(&YM2610.OPN.SL3.fn_h, 1);
-	state_save_byte(YM2610.OPN.SL3.kcode, 3);
+	mkstate_data(gzf,YM2610.OPN.SL3.fc, 12,STWRITE);
+	mkstate_data(gzf,&YM2610.OPN.SL3.fn_h, 1,STWRITE);
+	mkstate_data(gzf,YM2610.OPN.SL3.kcode, 3,STWRITE);
 
-	state_save_byte(&YM2610.addr_A1, 1);
-	state_save_byte(&YM2610.adpcm_arrivedEndAddress, 1);
+	mkstate_data(gzf,&YM2610.addr_A1, 1,STWRITE);
+	mkstate_data(gzf,&YM2610.adpcm_arrivedEndAddress, 1,STWRITE);
 
 	for (ch = 0; ch < 6; ch++)
 	{
-		state_save_byte(&YM2610.adpcma[ch].flag, 1);
-		state_save_byte(&YM2610.adpcma[ch].now_data, 1);
-		state_save_long(&YM2610.adpcma[ch].now_addr, 1);
-		state_save_long(&YM2610.adpcma[ch].now_step, 1);
-		state_save_long(&YM2610.adpcma[ch].adpcma_acc, 1);
-		state_save_long(&YM2610.adpcma[ch].adpcma_step, 1);
-		state_save_long(&YM2610.adpcma[ch].adpcma_out, 1);
+		mkstate_data(gzf,&YM2610.adpcma[ch].flag, 1,STWRITE);
+		mkstate_data(gzf,&YM2610.adpcma[ch].now_data, 1,STWRITE);
+		mkstate_data(gzf,&YM2610.adpcma[ch].now_addr, 4,STWRITE);
+		mkstate_data(gzf,&YM2610.adpcma[ch].now_step, 4,STWRITE);
+		mkstate_data(gzf,&YM2610.adpcma[ch].adpcma_acc, 4,STWRITE);
+		mkstate_data(gzf,&YM2610.adpcma[ch].adpcma_step, 4,STWRITE);
+		mkstate_data(gzf,&YM2610.adpcma[ch].adpcma_out, 4,STWRITE);
 	}
 
-	state_save_byte(&YM2610.adpcmb.portstate, 1);
-	state_save_long(&YM2610.adpcmb.now_addr, 1);
-	state_save_long(&YM2610.adpcmb.now_step, 1);
-	state_save_long(&YM2610.adpcmb.acc, 1);
-	state_save_long(&YM2610.adpcmb.prev_acc, 1);
-	state_save_long(&YM2610.adpcmb.adpcmd, 1);
-	state_save_long(&YM2610.adpcmb.adpcml, 1);
+	mkstate_data(gzf,&YM2610.adpcmb.portstate, 1,STWRITE);
+	mkstate_data(gzf,&YM2610.adpcmb.now_addr, 4,STWRITE);
+	mkstate_data(gzf,&YM2610.adpcmb.now_step, 4,STWRITE);
+	mkstate_data(gzf,&YM2610.adpcmb.acc, 4,STWRITE);
+	mkstate_data(gzf,&YM2610.adpcmb.prev_acc, 4,STWRITE);
+	mkstate_data(gzf,&YM2610.adpcmb.adpcmd, 4,STWRITE);
+	mkstate_data(gzf,&YM2610.adpcmb.adpcml, 4,STWRITE);
 
-	state_save_long(&option_samplerate, 1);
+//	mkstate_data(gzf,&option_samplerate, 4,STWRITE);
 }
 
-STATE_LOAD( ym2610 )
-{
+void ym2610_STATE_LOAD(gzFile *gzf) {
 	int slot, ch, r;
 
-	state_load_byte(YM2610.regs, 512);
+	mkstate_data(gzf,YM2610.regs, 512,STREAD);
 
-	state_load_double(&YM2610.OPN.ST.BusyExpire, 1);
-	state_load_byte(&YM2610.OPN.ST.address, 1);
-	state_load_byte(&YM2610.OPN.ST.irq, 1);
-	state_load_byte(&YM2610.OPN.ST.irqmask, 1);
-	state_load_byte(&YM2610.OPN.ST.status, 1);
-	state_load_long(&YM2610.OPN.ST.mode, 1);
-	state_load_byte(&YM2610.OPN.ST.prescaler_sel, 1);
-	state_load_byte(&YM2610.OPN.ST.fn_h, 1);
-	state_load_long(&YM2610.OPN.ST.TA, 1);
-	state_load_long(&YM2610.OPN.ST.TAC, 1);
-	state_load_byte(&YM2610.OPN.ST.TB, 1);
-	state_load_long(&YM2610.OPN.ST.TBC, 1);
+	mkstate_data(gzf,&YM2610.OPN.ST.BusyExpire, sizeof(double),STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.address, 1,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.irq, 1,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.irqmask, 1,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.status, 1,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.mode, 4,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.prescaler_sel, 1,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.fn_h, 1,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.TA, 4,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.TAC, 4,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.TB, 1,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.ST.TBC, 4,STREAD);
 
 	for (ch = 0; ch < 6; ch++)
 	{
-		state_load_long(YM2610.CH[ch].op1_out, 2);
-		state_load_long(&YM2610.CH[ch].fc, 1);
+		mkstate_data(gzf,YM2610.CH[ch].op1_out, 8,STREAD);
+		mkstate_data(gzf,&YM2610.CH[ch].fc, 4,STREAD);
 
 		for (slot = 0; slot < 4; slot++)
 		{
 			FM_SLOT *SLOT = &YM2610.CH[ch].SLOT[slot];
 
-			state_load_long(&SLOT->phase, 1);
-			state_load_byte(&SLOT->state, 1);
-			state_load_long(&SLOT->volume, 1);
+			mkstate_data(gzf,&SLOT->phase, 4,STREAD);
+			mkstate_data(gzf,&SLOT->state, 1,STREAD);
+			mkstate_data(gzf,&SLOT->volume, 4,STREAD);
 		}
 	}
 
-	state_load_long(YM2610.OPN.SL3.fc, 3);
-	state_load_byte(&YM2610.OPN.SL3.fn_h, 1);
-	state_load_byte(YM2610.OPN.SL3.kcode, 3);
+	mkstate_data(gzf,YM2610.OPN.SL3.fc, 12,STREAD);
+	mkstate_data(gzf,&YM2610.OPN.SL3.fn_h, 1,STREAD);
+	mkstate_data(gzf,YM2610.OPN.SL3.kcode, 3,STREAD);
 
-	state_load_byte(&YM2610.addr_A1, 1);
-	state_load_byte(&YM2610.adpcm_arrivedEndAddress, 1);
+	mkstate_data(gzf,&YM2610.addr_A1, 1,STREAD);
+	mkstate_data(gzf,&YM2610.adpcm_arrivedEndAddress, 1,STREAD);
 
 	for (ch = 0; ch < 6; ch++)
 	{
-		state_load_byte(&YM2610.adpcma[ch].flag, 1);
-		state_load_byte(&YM2610.adpcma[ch].now_data, 1);
-		state_load_long(&YM2610.adpcma[ch].now_addr, 1);
-		state_load_long(&YM2610.adpcma[ch].now_step, 1);
-		state_load_long(&YM2610.adpcma[ch].adpcma_acc, 1);
-		state_load_long(&YM2610.adpcma[ch].adpcma_step, 1);
-		state_load_long(&YM2610.adpcma[ch].adpcma_out, 1);
+		mkstate_data(gzf,&YM2610.adpcma[ch].flag, 1,STREAD);
+		mkstate_data(gzf,&YM2610.adpcma[ch].now_data, 1,STREAD);
+		mkstate_data(gzf,&YM2610.adpcma[ch].now_addr, 4,STREAD);
+		mkstate_data(gzf,&YM2610.adpcma[ch].now_step, 4,STREAD);
+		mkstate_data(gzf,&YM2610.adpcma[ch].adpcma_acc, 4,STREAD);
+		mkstate_data(gzf,&YM2610.adpcma[ch].adpcma_step, 4,STREAD);
+		mkstate_data(gzf,&YM2610.adpcma[ch].adpcma_out, 4,STREAD);
 	}
 
-	state_load_byte(&YM2610.adpcmb.portstate, 1);
-	state_load_long(&YM2610.adpcmb.now_addr, 1);
-	state_load_long(&YM2610.adpcmb.now_step, 1);
-	state_load_long(&YM2610.adpcmb.acc, 1);
-	state_load_long(&YM2610.adpcmb.prev_acc, 1);
-	state_load_long(&YM2610.adpcmb.adpcmd, 1);
-	state_load_long(&YM2610.adpcmb.adpcml, 1);
+	mkstate_data(gzf,&YM2610.adpcmb.portstate, 1,STREAD);
+	mkstate_data(gzf,&YM2610.adpcmb.now_addr, 4,STREAD);
+	mkstate_data(gzf,&YM2610.adpcmb.now_step, 4,STREAD);
+	mkstate_data(gzf,&YM2610.adpcmb.acc, 4,STREAD);
+	mkstate_data(gzf,&YM2610.adpcmb.prev_acc, 4,STREAD);
+	mkstate_data(gzf,&YM2610.adpcmb.adpcmd, 4,STREAD);
+	mkstate_data(gzf,&YM2610.adpcmb.adpcml, 4,STREAD);
 
-	state_load_long(&option_samplerate, 1);
+//	mkstate_data(gzf,&option_samplerate, 4,STREAD);
 
 	for (r = 0; r < 16; r++)
 	{
@@ -3485,5 +3490,3 @@ STATE_LOAD( ym2610 )
 	if (pcmbufB)
 		YM2610.adpcmb.now_data = *(pcmbufB + (YM2610.adpcmb.now_addr >> 1));
 }
-
-#endif /* SAVE_STATE */

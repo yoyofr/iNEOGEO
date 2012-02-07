@@ -30,6 +30,10 @@ int virtual_stick_pad=0;
 Uint8 virtual_stick_buttons_alpha=32;
 Uint8 virtual_stick_buttons_alpha2=128;
 
+int wm_joy_pl1,wm_joy_pl2;
+int wm_prev_joy_pl1=0;
+int wm_prev_joy_pl2=0;
+
 int virtual_stick_posx=80;
 int virtual_stick_posy=320-80;
 int virtual_stick_maxdist=80;
@@ -340,6 +344,10 @@ int handle_event(void) {
     }
     if (num_of_joys>=1) {        
         if (wm_joy_pl1=iOS_wiimote_check(&(joys[0]))) virtual_stick_on=0;
+        
+        if (wm_joy_pl1!=wm_prev_joy_pl1) {
+            wm_prev_joy_pl1=wm_joy_pl1;
+
         joy_state[0][GN_UP]=(wm_joy_pl1&WII_JOY_UP?1:0);
         joy_state[0][GN_DOWN]=(wm_joy_pl1&WII_JOY_DOWN?1:0);
         joy_state[0][GN_LEFT]=(wm_joy_pl1&WII_JOY_LEFT?1:0);
@@ -352,6 +360,7 @@ int handle_event(void) {
         joy_state[0][GN_START]=(wm_joy_pl1&WII_JOY_START?1:0);
         joy_state[0][GN_MENU_KEY]=(wm_joy_pl1&WII_JOY_HOME?1:0);
         joy_state[0][GN_TURBO]=(wm_joy_pl1&WII_JOY_E?1:0);
+        }
     }
     
 	while (SDL_PollEvent(&event)) {
@@ -719,6 +728,13 @@ void reset_event(void) {
     for (i=0;i<VSTICK_NB_BUTTON;i++) virtual_stick[i].finger_id=0;
     virtual_stick_padfinger=0;
     virtual_stick_pad=0;
+    wm_prev_joy_pl1=wm_prev_joy_pl2=0;
+    if (num_of_joys>=2) {
+        if (wm_prev_joy_pl2=iOS_wiimote_check(&(joys[1]))) virtual_stick_on=0;
+    }   
+    if (num_of_joys>=1) {
+        if (wm_prev_joy_pl1=iOS_wiimote_check(&(joys[0]))) virtual_stick_on=0;
+    }
 }
 
 int wait_event(void) {
@@ -763,6 +779,8 @@ int wait_event(void) {
     if (num_of_joys>=1) {        
         if (wm_joy_pl1=iOS_wiimote_check(&(joys[0]))) virtual_stick_on=0;
         
+        if (wm_joy_pl1!=wm_prev_joy_pl1) {
+            wm_prev_joy_pl1=wm_joy_pl1;
         joy_state[0][GN_UP]=(wm_joy_pl1&WII_JOY_UP?1:0);
         joy_state[0][GN_DOWN]=(wm_joy_pl1&WII_JOY_DOWN?1:0);
         joy_state[0][GN_LEFT]=(wm_joy_pl1&WII_JOY_LEFT?1:0);
@@ -774,7 +792,8 @@ int wait_event(void) {
         joy_state[0][GN_SELECT_COIN]=(wm_joy_pl1&WII_JOY_SELECT?1:0);
         joy_state[0][GN_START]=(wm_joy_pl1&WII_JOY_START?1:0);
         joy_state[0][GN_MENU_KEY]=(wm_joy_pl1&WII_JOY_HOME?1:0);
-        joy_state[0][GN_TURBO]=(wm_joy_pl1&WII_JOY_E?1:0);                    
+        joy_state[0][GN_TURBO]=(wm_joy_pl1&WII_JOY_E?1:0);
+        }
     }
     
 	while (SDL_PollEvent(&event)) {
