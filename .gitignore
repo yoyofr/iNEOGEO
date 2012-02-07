@@ -1,0 +1,4 @@
+# ignore individual user's xcode data
+*xcuserdata*
+*.DS_Store*
+Resources/gngeo.dat/*
