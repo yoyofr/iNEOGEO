@@ -606,18 +606,9 @@
 			isa = PBXGroup;
 			children = (
 				33B2336C14C74B1D009AF545 /* gngeo_data.zip */,
-				33B2336D14C74B1D009AF545 /* roms */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
-		};
-		33B2336D14C74B1D009AF545 /* roms */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = roms;
-			path = Resources/roms;
-			sourceTree = SOURCE_ROOT;
 		};
 		33B262B014DBD415009F792A /* Include */ = {
 			isa = PBXGroup;

@@ -125,6 +125,8 @@ void cf_cache_conf(void) {
 	/* cache some frequently used conf item */
 	//	printf("Update Conf Cache, sample rate=%d -> %d\n",conf.sample_rate,CF_VAL(cf_get_item_by_name("samplerate")));
     conf.rendermode = CF_VAL(cf_get_item_by_name("rendermode"));
+    conf.vpad_alpha = CF_VAL(cf_get_item_by_name("vpad_alpha"));
+    conf.wiimote = CF_VAL(cf_get_item_by_name("wiimote"));
     
 	conf.sound = CF_BOOL(cf_get_item_by_name("sound"));
 	conf.vsync = CF_BOOL(cf_get_item_by_name("vsync"));
@@ -422,6 +424,8 @@ void cf_init(void) {
 	cf_create_bool_item("autoframeskip", "Enable auto frameskip", 0, true);
 	cf_create_bool_item("fullscreen", "Start gngeo in fullscreen", 'f', false);
 	cf_create_int_item("rendermode", "Rendering mode (x)", "x", 0, 0);
+    cf_create_int_item("vpad_alpha", "vpad_alpha (x)", "x", 0, 0);
+    cf_create_int_item("wiimote", "wiimote allowed (x)", "x", 0, 0);
 #endif
 	cf_create_bool_item("pal", "Use PAL timing (buggy)", 'P', false);
 	cf_create_bool_item("screen320", "Use 320x224 output screen (instead 304x224)", 0, false);

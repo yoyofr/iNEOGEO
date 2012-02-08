@@ -83,6 +83,10 @@ static GNFONT *mfont;
 static SDL_Surface *gngeo_logo, *gngeo_mask, *pbar_logo;
 static SDL_Surface *wiimote_logo,*icade_logo;
 
+static int rombrowser_on;
+static char last_loaded_snap[16];
+static SDL_Surface *rom_snap;
+
 static SDL_Surface *arrow_l, *arrow_r, *arrow_u, *arrow_d;
 static int interp;
 
@@ -768,6 +772,7 @@ static void draw_menu(GN_MENU *m) {
 	GNFONT *fnt;
 	LIST *l = m->item;
 	int j;
+    char *cur_rom_file=NULL;
 
 	if (m->draw_type == MENU_BIG)
 		fnt = mfont;
@@ -830,7 +835,10 @@ static void draw_menu(GN_MENU *m) {
 
 		} else {
 			draw_string(menu_buf, fnt, MENU_TEXT_X + 10, MENU_TEXT_Y + (j * fnt->ysize + 2), mi->name);
-			if (i == m->current) draw_string(menu_buf, fnt, MENU_TEXT_X, MENU_TEXT_Y + (j * fnt->ysize + 2), ">");
+			if (i == m->current) {
+                draw_string(menu_buf, fnt, MENU_TEXT_X, MENU_TEXT_Y + (j * fnt->ysize + 2), ">");
+                if (rombrowser_on) cur_rom_file=(char*)(mi->arg);
+            }
 			if (mi->type == MENU_CHECK) {
 				if (mi->val)
 					draw_string(menu_buf, fnt, MENU_TEXT_X + 210, MENU_TEXT_Y + (j * fnt->ysize + 2), "true");
@@ -861,6 +869,45 @@ static void draw_menu(GN_MENU *m) {
         draw_joylogo(1,28,50);
         draw_string(menu_buf, mfont, 28+18, 50-32, "1P");
         
+    }
+    if (cur_rom_file) {
+        if (strstr(cur_rom_file,".gno")) {
+            int i=0;
+            while (cur_rom_file[i]) {
+                if (cur_rom_file[i]=='.') {cur_rom_file[i]=0;break;}
+                i++;
+            }
+        }
+        if (strcmp(last_loaded_snap,cur_rom_file)!=0) {
+            char tmp_snap[32];
+            SDL_Surface *tmps;
+            strcpy(last_loaded_snap,cur_rom_file);
+            sprintf(tmp_snap,"snap/%s.png",cur_rom_file);
+            tmps = res_load_stbi(tmp_snap);
+            if (!tmps) {
+                printf("cannot load snap: %s\n",tmp_snap);
+                if (rom_snap) SDL_FreeSurface(rom_snap);
+                rom_snap=NULL;
+            } else {
+                if (rom_snap) SDL_FreeSurface(rom_snap);
+                rom_snap = SDL_ConvertSurface(tmps, menu_buf->format, SDL_SWSURFACE);
+                SDL_FreeSurface(tmps);
+            }
+        }
+        
+        if (rom_snap) {
+            SDL_Rect dst_r;
+            
+            SDL_Rect dstrect_binding = {160-2, 20-2, 160 + 4, 112 + 4};
+            SDL_FillRect(menu_buf, &dstrect_binding, COL32_TO_16(0xFEFEFE));
+                
+            
+            dst_r.x=160;
+            dst_r.y=20;
+            dst_r.w=160;
+            dst_r.h=112;
+            SDL_SoftStretch(rom_snap, NULL, menu_buf, &dst_r);            
+        }
     }
     
 	SDL_BlitSurface(menu_buf, NULL, buffer, NULL);
@@ -924,7 +971,7 @@ static int load_state_action(GN_MENU_ITEM *self, void *param) {
 	//slot_img=load_state_img(conf.game,slot);
 	tmps = load_state_img(conf.game, slot);    
 	slot_img = SDL_ConvertSurface(tmps, menu_buf->format, SDL_SWSURFACE);
-
+    
 	while (1) {
 		//if (back) SDL_BlitSurface(back,NULL,menu_buf,&dst_r);
 		//else SDL_FillRect(menu_buf,NULL,COL32_TO_16(0x11A011));
@@ -946,11 +993,13 @@ static int load_state_action(GN_MENU_ITEM *self, void *param) {
 		switch (wait_event()) {
 			case GN_LEFT:
 				if (slot > 0) slot--;
-				slot_img = SDL_ConvertSurface(load_state_img(conf.game, slot), menu_buf->format, SDL_SWSURFACE);
-				break;
+                tmps=load_state_img(conf.game, slot);
+				slot_img = SDL_ConvertSurface(tmps, menu_buf->format, SDL_SWSURFACE);
+                break;
 			case GN_RIGHT:
 				if (slot < nb_slot - 1) slot++;
-				slot_img = SDL_ConvertSurface(load_state_img(conf.game, slot), menu_buf->format, SDL_SWSURFACE);
+                tmps=load_state_img(conf.game, slot);
+				slot_img = SDL_ConvertSurface(tmps, menu_buf->format, SDL_SWSURFACE);
 				break;
 			case GN_B:
 				return MENU_STAY;
@@ -1008,13 +1057,18 @@ static int save_state_action(GN_MENU_ITEM *self, void *param) {
 		switch (wait_event()) {
 			case GN_LEFT:
 				if (slot > 0) slot--;
-				if (slot != nb_slot) slot_img = SDL_ConvertSurface(load_state_img(conf.game, slot),
-						menu_buf->format, SDL_SWSURFACE);
+				if (slot != nb_slot) {
+                    tmps=load_state_img(conf.game, slot);
+                    slot_img = SDL_ConvertSurface(tmps,menu_buf->format, SDL_SWSURFACE);
+                }
 				break;
 			case GN_RIGHT:
 				if (slot < nb_slot) slot++;
-				if (slot != nb_slot) slot_img = SDL_ConvertSurface(load_state_img(conf.game, slot),
+				if (slot != nb_slot) {
+                    tmps=load_state_img(conf.game, slot);
+                    slot_img = SDL_ConvertSurface(tmps,
 						menu_buf->format, SDL_SWSURFACE);
+                }
 				break;
 			case GN_B:
 				return MENU_STAY;
@@ -1235,10 +1289,10 @@ void init_rom_browser_menu(void) {
 		if (stat(filename, &filestat) == 0 && S_ISREG(filestat.st_mode)) {
 			char *gnoname = dr_gno_romname(filename);
 			if (gnoname != NULL) {
-                char *list_entry=strdup(filename+13-5); // name is like "../Documents/xxx.gno" and we want <GNO>xxx.gno
-                list_entry[0]='[';list_entry[1]='G';list_entry[2]='N';list_entry[3]='O';list_entry[4]=']';
+                char *list_entry=strdup(filename+13); // name is like "../Documents/xxx.gno" and we want <GNO>xxx.gno
+                char *fname=strdup(filename+13);                
 				rbrowser_menu->item = list_insert_sort(rbrowser_menu->item,
-						(void*) gn_menu_create_item(list_entry, MENU_ACTION, loadrom_action, strdup(filename)),
+						(void*) gn_menu_create_item(list_entry, MENU_ACTION, loadrom_action, fname),
 						romnamesort);
 				rbrowser_menu->nb_elem++;
 				nb_roms++;
@@ -1278,7 +1332,7 @@ int rom_browser_menu(void) {
 	static Uint32 init = 0;
 	int a;
 	SDL_Thread *anim_th;
-
+    
 	if (init == 0) {
 		init = 1;
 
@@ -1288,10 +1342,12 @@ int rom_browser_menu(void) {
 		scaning = 0;
 		//SDL_WaitThread(anim_th, NULL);
 	}
-
+    
 	while (1) {
-		rbrowser_menu->draw(rbrowser_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
-		if ((a = rbrowser_menu->event_handling(rbrowser_menu)) > 0) {
+        rombrowser_on=1;
+		rbrowser_menu->draw(rbrowser_menu); //frame_skip(0);printf("fps: %s\n",fps_str);        
+        rombrowser_on=0;
+        if ((a = rbrowser_menu->event_handling(rbrowser_menu)) > 0) {
 			if (a == MENU_CLOSE)
 				return MENU_STAY;
 			else
@@ -1447,7 +1503,7 @@ static int toggle_rendermode(GN_MENU_ITEM *self, void *param) {
 //	self->val++;
 //    if (self->val>2) self->val=0;
     conf.rendermode++;
-    if (conf.rendermode>2) conf.rendermode=0;
+    if (conf.rendermode>3) conf.rendermode=0;
     self->val= conf.rendermode;
 	cf_item_has_been_changed(cf_get_item_by_name("rendermode"));
 	CF_VAL(cf_get_item_by_name("rendermode")) = self->val;
@@ -1457,6 +1513,37 @@ static int toggle_rendermode(GN_MENU_ITEM *self, void *param) {
 	screen_reinit();
 	return MENU_STAY;
 }
+
+static int toggle_vpad_alpha(GN_MENU_ITEM *self, void *param) {
+    conf.vpad_alpha++;
+    if (conf.vpad_alpha>3) conf.vpad_alpha=0;
+    self->val= conf.vpad_alpha;
+	cf_item_has_been_changed(cf_get_item_by_name("vpad_alpha"));
+	CF_VAL(cf_get_item_by_name("vpad_alpha")) = self->val;    
+    sprintf(self->str, "%d", conf.vpad_alpha);	
+	screen_reinit();
+	return MENU_STAY;
+}
+
+static int toggle_wiimote(GN_MENU_ITEM *self, void *param) {
+    conf.wiimote++;
+    if (conf.wiimote>1) conf.wiimote=0;
+    
+    if (conf.wiimote) startWiimoteDetection();
+    else {
+        stopWiimoteDetection();
+        gn_popup_info("ICade", "BTStack was stopped but you might need to reactivate \niOS bluetooth from iOS 'Settings' screen.\n\nPlease save your conf and exit iNEOGEO.\n");
+    }
+    
+    self->val= conf.wiimote;
+	cf_item_has_been_changed(cf_get_item_by_name("wiimote"));
+	CF_VAL(cf_get_item_by_name("wiimote")) = self->val;    
+    if (conf.wiimote) sprintf(self->str, "Wiimote");
+    else sprintf(self->str, "ICade");
+	screen_reinit();
+	return MENU_STAY;
+}
+
 static int toggle_vsync(GN_MENU_ITEM *self, void *param) {
 
 	self->val = 1 - self->val;
@@ -1642,6 +1729,13 @@ static void reset_menu_option(void) {
 	gitem=gn_menu_get_item_by_name(option_menu,"Rendermode");
 	sprintf(gitem->str, "%d", conf.rendermode);
     
+    gitem=gn_menu_get_item_by_name(option_menu,"vpad alpha");
+	sprintf(gitem->str, "%d", conf.vpad_alpha);
+    
+    gitem=gn_menu_get_item_by_name(option_menu,"Bluetooth");
+	if (conf.wiimote) sprintf(gitem->str, "Wiimote");
+    else sprintf(gitem->str, "ICade");
+    
 //    RESET_BOOL("Fullscreen","fullscreen");
 //	RESET_BOOL("Vsync","vsync");
 	RESET_BOOL("Auto Frame Skip","autoframeskip");
@@ -1711,6 +1805,19 @@ void gn_init_menu(void) {
     gitem = gn_menu_create_item("Rendermode", MENU_LIST, toggle_rendermode, NULL);
 	gitem->str = malloc(2);
     sprintf(gitem->str, "%d", conf.rendermode);
+	option_menu->item = list_append(option_menu->item, (void*) gitem);
+	option_menu->nb_elem++;
+    
+    gitem = gn_menu_create_item("vpad alpha", MENU_LIST, toggle_vpad_alpha, NULL);
+	gitem->str = malloc(2);
+    sprintf(gitem->str, "%d", conf.vpad_alpha);
+	option_menu->item = list_append(option_menu->item, (void*) gitem);
+	option_menu->nb_elem++;
+    
+    gitem = gn_menu_create_item("Bluetooth", MENU_LIST, toggle_wiimote, NULL);
+	gitem->str = malloc(10);
+    if (conf.wiimote) sprintf(gitem->str, "Wiimote");
+    else sprintf(gitem->str, "ICade");
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
 	option_menu->nb_elem++;
 
@@ -1785,10 +1892,13 @@ Uint32 run_menu(void) {
 		gn_init_menu();
 	}
     
-    startWiimoteDetection();
+    if (conf.wiimote) startWiimoteDetection();
 
     
 	init_back();
+    rombrowser_on=0;
+    last_loaded_snap[0]=0;
+    rom_snap=NULL;
 
 	reset_event();
 	//	conf.autoframeskip = 1;
@@ -1810,14 +1920,15 @@ Uint32 run_menu(void) {
 		main_menu->draw(main_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
 		if ((a = main_menu->event_handling(main_menu)) > 0) {
 			reset_event();
-            stopWiimoteDetection();
+            if (conf.wiimote) stopWiimoteDetection();
+            if (rom_snap) SDL_FreeSurface(rom_snap);
 			return a;
         }
 	}
 	reset_event();
 	if (conf.game == NULL) return 2; /* Exit */
     
-    stopWiimoteDetection();
+    if (conf.wiimote) stopWiimoteDetection();
     
 	return 0;
 }

@@ -4,7 +4,7 @@
 
 #include <stdbool.h>
 
-#define SLIDEY_CHANGE_RENDERMODE_MIN 15
+#define SLIDEY_CHANGE_RENDERMODE_MIN 10
 #define SLIDEX_CHANGE_RENDERMODE_MAX 2
 
 #include "SDL.h"
@@ -27,8 +27,8 @@ extern int cur_width,cur_height;
 
 int virtual_stick_on=1;
 int virtual_stick_pad=0;
-Uint8 virtual_stick_buttons_alpha=32;
-Uint8 virtual_stick_buttons_alpha2=128;
+Uint8 virtual_stick_buttons_alpha=128;
+Uint8 virtual_stick_buttons_alpha2=200;
 
 int wm_joy_pl1,wm_joy_pl2;
 int wm_prev_joy_pl1=0;
@@ -42,54 +42,55 @@ int virtual_stick_maxdist2=70*70;
 int virtual_stick_mindist2=16*16;
 float virtual_stick_angle;
 SDL_FingerID virtual_stick_padfinger;
+int slide_detected;
 
 t_touch_area virtual_stick_iphone_landscape[VSTICK_NB_BUTTON]={
-    {GN_A,          480-50-30-50,   320-50-20-50,   50,50,0xFF,0x00,0x00,0},  //red
-    {GN_B,          480-50,         320-50-20-50,   50,50,0xFF,0xFF,0x00,0},  //yellow
-    {GN_C,          480-50-30-50,   320-50,         50,50,0x00,0xFF,0x00,0},  //green
-    {GN_D,          480-50,         320-50,         50,50,0x00,0x00,0xFF,0},  //blue
+    {GN_A,          480-64-10-64,   320-64-6-64,   64,64,0xFF,0x00,0x00,0},  //red
+    {GN_B,          480-64,         320-64-6-64-10,   64,64,0xFF,0xFF,0x00,0},  //yellow
+    {GN_C,          480-64-10-64,   320-64,         64,64,0x00,0xFF,0x00,0},  //green
+    {GN_D,          480-64,         320-64-10,         64,64,0x00,0x00,0xFF,0},  //blue
     
-    {GN_START,      480-50,         0,              50,50,0xFF,0xFF,0xFF,0},
-    {GN_SELECT_COIN,480-50,         70,             50,50,0xFF,0xFF,0xFF,0},
-    {GN_MENU_KEY,     0,            0,              50,50,0xFF,0xFF,0xFF,0},
-    {GN_TURBO,        0,            70,             50,50,0xFF,0xFF,0xFF,0}
+    {GN_START,      480-48,         0,              48,48,0xFF,0xFF,0xFF,0},
+    {GN_SELECT_COIN,480-48,         48,             48,48,0x8F,0x8F,0x8F,0},
+    {GN_MENU_KEY,     0,            0,              48,48,0xEF,0xFF,0x7F,0},
+    {GN_TURBO,        0,            48,             48,48,0xFF,0x7F,0xFF,0}
 };
 
 t_touch_area virtual_stick_iphone_portrait[VSTICK_NB_BUTTON]={
-    {GN_A,          320-50-30-50,   480-50-20-50,   50,50,0xFF,0x00,0x00,0},  //red
-    {GN_B,          320-50,         480-50-20-50,   50,50,0xFF,0xFF,0x00,0},  //yellow
-    {GN_C,          320-50-30-50,   480-50,         50,50,0x00,0xFF,0x00,0},  //green
-    {GN_D,          320-50,         480-50,         50,50,0x00,0x00,0xFF,0},  //blue
+    {GN_A,          320-64-10-64,   480-2*64-6-20,   64,64,0xFF,0x00,0x00,0},  //red
+    {GN_B,          320-64,         480-2*64-6-30,   64,64,0xFF,0xFF,0x00,0},  //yellow
+    {GN_C,          320-64-10-64,   480-64-20,         64,64,0x00,0xFF,0x00,0},  //green
+    {GN_D,          320-64,         480-64-30,         64,64,0x00,0x00,0xFF,0},  //blue
     
-    {GN_START,      270,         240,              50,50,0xFF,0xFF,0xFF,0},
-    {GN_SELECT_COIN,195,         240,              50,50,0xFF,0xFF,0xFF,0},
-    {GN_MENU_KEY,     0,            240,              50,50,0xFF,0xFF,0xFF,0},
-    {GN_TURBO,        75,            240,             50,50,0xFF,0xFF,0xFF,0}
+    {GN_START,      270,         240,               48,48,0xFF,0xFF,0xFF,0},
+    {GN_SELECT_COIN,195,         240,               48,48,0x8F,0x8F,0x8F,0},
+    {GN_MENU_KEY,     0,            240,            48,48,0xEF,0xFF,0x7F,0},
+    {GN_TURBO,        75,            240,           48,48,0xFF,0x7F,0xFF,0}
 };
 
 
 t_touch_area virtual_stick_ipad_landscape[VSTICK_NB_BUTTON]={
-    {GN_A,          1024-80*2-20,   768-80*2-20,    80,80,0xFF,0x00,0x00,0},  //red
-    {GN_B,          1024-80,        768-80*2-20,    80,80,0xFF,0xFF,0x00,0},  //yellow
-    {GN_C,          1024-80*2-20,   768-80,         80,80,0x00,0xFF,0x00,0},  //green
-    {GN_D,          1024-80,        768-80,         80,80,0x00,0x00,0xFF,0},  //blue
+    {GN_A,          1024-96*2-10,   768-96*2-6,    96,96,0xFF,0x00,0x00,0},  //red
+    {GN_B,          1024-96,        768-96*2-6-20,    96,96,0xFF,0xFF,0x00,0},  //yellow
+    {GN_C,          1024-96*2-10,   768-96,         96,96,0x00,0xFF,0x00,0},  //green
+    {GN_D,          1024-96,        768-96-20,         96,96,0x00,0x00,0xFF,0},  //blue
     
-    {GN_START,      1024-80,        0,              80,80,0xFF,0xFF,0xFF,0},
-    {GN_SELECT_COIN,1024-80,        100,            80,80,0xFF,0xFF,0xFF,0},
-    {GN_MENU_KEY,     0,            0,              80,80,0xFF,0xFF,0xFF,0},
-    {GN_TURBO,        0,            100,            80,80,0xFF,0xFF,0xFF,0}
+    {GN_START,      1024-80,        0,              64,64,0xFF,0xFF,0xFF,0},
+    {GN_SELECT_COIN,1024-80,        100,            64,64,0x8F,0x8F,0x8F,0},
+    {GN_MENU_KEY,     0,            0,              64,64,0xEF,0xFF,0x7F,0},
+    {GN_TURBO,        0,            100,            64,64,0xFF,0x7F,0xFF,0}
 };
 
 t_touch_area virtual_stick_ipad_portrait[VSTICK_NB_BUTTON]={
-    {GN_A,          768-80*2-20,   1024-80*2-20,    80,80,0xFF,0x00,0x00,0},  //red
-    {GN_B,          768-80,        1024-80*2-20,    80,80,0xFF,0xFF,0x00,0},  //yellow
-    {GN_C,          768-80*2-20,   1024-80,         80,80,0x00,0xFF,0x00,0},  //green
-    {GN_D,          768-80,        1024-80,         80,80,0x00,0x00,0xFF,0},  //blue
+    {GN_A,          768-96*2-20,   1024-96*2-6-60,    96,96,0xFF,0x00,0x00,0},  //red
+    {GN_B,          768-96,        1024-96*2-6-20-60,    96,96,0xFF,0xFF,0x00,0},  //yellow
+    {GN_C,          768-96*2-20,   1024-96-60,         96,96,0x00,0xFF,0x00,0},  //green
+    {GN_D,          768-96,        1024-96-20-60,         96,96,0x00,0x00,0xFF,0},  //blue
     
-    {GN_START,      768-80,        600,             80,80,0xFF,0xFF,0xFF,0},
-    {GN_SELECT_COIN,768-80-120,    600,             80,80,0xFF,0xFF,0xFF,0},
-    {GN_MENU_KEY,     0,           600,             80,80,0xFF,0xFF,0xFF,0},
-    {GN_TURBO,        120,         600,             80,80,0xFF,0xFF,0xFF,0}
+    {GN_START,      768-80,        600,             64,64,0xFF,0xFF,0xFF,0},
+    {GN_SELECT_COIN,768-80-120,    600,             64,64,0x8F,0x8F,0x8F,0},
+    {GN_MENU_KEY,     0,           600,             64,64,0xEF,0xFF,0x7F,0},
+    {GN_TURBO,        120,         600,             64,64,0xFF,0x7F,0xFF,0}
 };
 
 
@@ -382,8 +383,7 @@ int handle_event(void) {
                 //printf("delta: %d x %d\n",event.tfinger.dx*cur_width/ state->xres,event.tfinger.dy*cur_height/ state->yres);
                 if ((event.tfinger.dy*100/ state->yres < -SLIDEY_CHANGE_RENDERMODE_MIN)&&
                     (abs(event.tfinger.dx*100/ state->xres) < SLIDEX_CHANGE_RENDERMODE_MAX)) {
-                    conf.rendermode++;
-                    if (conf.rendermode>2) conf.rendermode=0;
+                    slide_detected=1;
                 }
                 
                 if (event.tfinger.fingerId==virtual_stick_padfinger) { //is it the finger on pad
@@ -473,7 +473,7 @@ int handle_event(void) {
                     joy_state[0][GN_UPLEFT]=0;
                     joy_state[0][GN_DOWNLEFT]=0;
                 } 
-            {
+            
                     
                     for (int i=0;i<VSTICK_NB_BUTTON;i++) 
                         if (virtual_stick[i].finger_id==event.tfinger.fingerId) {
@@ -481,6 +481,11 @@ int handle_event(void) {
                             joy_state[0][virtual_stick[i].button_id]=0;
                             break;
                         }
+                if (slide_detected) {
+                    slide_detected=0;
+                    conf.rendermode++;
+                    if (conf.rendermode>3) conf.rendermode=0;
+
                 }
                 break;
                 
@@ -735,6 +740,7 @@ void reset_event(void) {
     if (num_of_joys>=1) {
         if (wm_prev_joy_pl1=iOS_wiimote_check(&(joys[0]))) virtual_stick_on=0;
     }
+    slide_detected=0;
 }
 
 int wait_event(void) {
@@ -812,8 +818,7 @@ int wait_event(void) {
                 //printf("delta: %d x %d\n",event.tfinger.dx*cur_width/ state->xres,event.tfinger.dy*cur_height/ state->yres);
                 if ((event.tfinger.dy*100/ state->yres > SLIDEY_CHANGE_RENDERMODE_MIN)&&
                     (abs(event.tfinger.dx*100/ state->xres) < SLIDEX_CHANGE_RENDERMODE_MAX)) {
-                    conf.rendermode++;
-                    if (conf.rendermode>2) conf.rendermode=0;
+                    slide_detected=1;
                 }
                 
                 if (event.tfinger.fingerId==virtual_stick_padfinger) { //is it the finger on pad
@@ -902,7 +907,7 @@ int wait_event(void) {
                     joy_state[0][GN_DOWNRIGHT]=0;
                     joy_state[0][GN_UPLEFT]=0;
                     joy_state[0][GN_DOWNLEFT]=0;
-                } else {
+                }
                     
                     for (int i=0;i<VSTICK_NB_BUTTON;i++) 
                         if (virtual_stick[i].finger_id==event.tfinger.fingerId) {
@@ -910,6 +915,12 @@ int wait_event(void) {
                             joy_state[0][virtual_stick[i].button_id]=0;
                             break;
                         }
+                
+                if (slide_detected) {
+                    slide_detected=0;
+                    conf.rendermode++;
+                    if (conf.rendermode>3) conf.rendermode=0;
+                    
                 }
                 last=-1;
                 counter=40;

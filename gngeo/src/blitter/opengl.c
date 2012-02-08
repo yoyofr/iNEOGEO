@@ -38,6 +38,8 @@ static SDL_Window *video_opengl;
 static SDL_GLContext ctx;
 static SDL_Surface *tex_opengl;
 static SDL_Rect glrectef;
+static int vpad_button_text[VSTICK_NB_BUTTON+1];
+static int vpad_button_text_w[VSTICK_NB_BUTTON+1],vpad_button_text_h[VSTICK_NB_BUTTON+1];
 
 extern int device_w,device_h;
 extern int cur_width,cur_height;
@@ -47,12 +49,74 @@ extern Uint8 virtual_stick_buttons_alpha,virtual_stick_buttons_alpha2;
 extern int virtual_stick_posx,virtual_stick_posy,virtual_stick_mindist,virtual_stick_maxdist;
 extern int virtual_stick_mindist2,virtual_stick_maxdist2;
 
+void recompute_vpad_pos(int width,int height) {
+    switch (height) {
+        case 320:
+            virtual_stick_posx = virtual_stick_maxdist;
+            virtual_stick_posy = cur_height-virtual_stick_maxdist;
+            virtual_stick_buttons_alpha=128>>(conf.vpad_alpha);
+            virtual_stick_buttons_alpha2=255>>(conf.vpad_alpha);
+            break;
+        case 480:
+            virtual_stick_posx = virtual_stick_maxdist;
+            virtual_stick_posy = cur_height-virtual_stick_maxdist-20;
+            virtual_stick_buttons_alpha=128;
+            virtual_stick_buttons_alpha2=255;
+            break;    
+        case 768:
+            virtual_stick_posx = virtual_stick_maxdist;
+            virtual_stick_posy = cur_height-virtual_stick_maxdist;
+            virtual_stick_buttons_alpha=128>>(conf.vpad_alpha);
+            virtual_stick_buttons_alpha2=255>>(conf.vpad_alpha);
+            break;
+        case 1024:
+            virtual_stick_posx = virtual_stick_maxdist;
+            virtual_stick_posy = cur_height-virtual_stick_maxdist-80;
+            virtual_stick_buttons_alpha=128;
+            virtual_stick_buttons_alpha2=255;
+            break;
+        default:
+            virtual_stick_posx = virtual_stick_maxdist;
+            virtual_stick_posy = cur_height-virtual_stick_maxdist;
+            virtual_stick_buttons_alpha=128>>(conf.vpad_alpha);
+            virtual_stick_buttons_alpha2=255>>(conf.vpad_alpha);
+            break;
+    }    
+    virtual_stick_maxdist2=virtual_stick_maxdist*virtual_stick_maxdist;
+    virtual_stick_mindist2=virtual_stick_mindist*virtual_stick_mindist;
+    
+    
+}
+
+int load_texture(int i,char *name) {
+    SDL_Surface *texts= res_load_stbi(name);    
+    if (!texts) return 1;
+    glGenTextures(1, &vpad_button_text[i]);
+    if (!vpad_button_text[i]) return 2;
+	glBindTexture(GL_TEXTURE_2D, vpad_button_text[i]);
+	glTexParameterf(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
+    vpad_button_text_w[i]=texts->w;
+    vpad_button_text_h[i]=texts->h;
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texts->w, texts->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, texts->pixels);
+	SDL_FreeSurface(texts);    
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    return 0;
+}
 SDL_bool
 blitter_opengl_init()
 {
 	Uint32 sdl_flags;
 	Uint32 width = device_w;
 	Uint32 height = device_h;
+    
+    int screen = 0;
+    SDL_DisplayMode cmode;
+    SDL_GetCurrentDisplayMode(screen,&cmode);
+    width=cmode.w;
+    height=cmode.h;
 	
     //        if (load_glproc() == SDL_FALSE) return SDL_FALSE;
     
@@ -98,12 +162,9 @@ blitter_opengl_init()
     
     SDL_GetWindowSize(video_opengl, &width, &height);
     cur_width=width;
-    cur_height=height;    
+    cur_height=height; 
     
-    virtual_stick_posx = virtual_stick_maxdist;
-    virtual_stick_posy = cur_height-virtual_stick_maxdist;
-    virtual_stick_maxdist2=virtual_stick_maxdist*virtual_stick_maxdist;
-    virtual_stick_mindist2=virtual_stick_mindist*virtual_stick_mindist;
+    recompute_vpad_pos(width,height);
     
 	
 	glClearColor(0, 0, 0, 0);
@@ -126,6 +187,23 @@ blitter_opengl_init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);//GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);//GL_CLAMP);
 	
+    /************************************/
+    /* init texture for vpad */
+    
+    // a,b,c,d buttons
+    load_texture(0,"skin/button.png");
+    for (int i=1;i<4;i++) {
+        vpad_button_text[i]=vpad_button_text[0];
+        vpad_button_text_w[i]=vpad_button_text_w[0];
+        vpad_button_text_h[i]=vpad_button_text_h[0];
+    }
+    load_texture(4,"skin/button_start.png");
+    load_texture(5,"skin/button_coin.png");
+    load_texture(6,"skin/button_menu.png");
+    load_texture(7,"skin/button_turbo.png");
+    load_texture(8,"skin/dpad.png");
+    
+    /**************************************/
     
 	if (neffect == 0)
 	{
@@ -193,10 +271,8 @@ blitter_opengl_update() {
         
         glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT);
-        
-        /*        for (int i=0;i<320;i++)
-         for (int j=0;j<100;j++) ((unsigned short*)(tex_opengl->pixels))[i*(tex_opengl->pitch/2)+j]=i*i+j*j;
-         */      
+
+        glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, txtnumber);    /* Bind The Texture */
         
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 512, 256, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, tex_opengl->pixels);
@@ -219,10 +295,7 @@ blitter_opengl_update() {
         cur_width=width;
         cur_height=height;
         
-        virtual_stick_posx = virtual_stick_maxdist;
-        virtual_stick_posy = cur_height-virtual_stick_maxdist;
-        virtual_stick_maxdist2=virtual_stick_maxdist*virtual_stick_maxdist;
-        virtual_stick_mindist2=virtual_stick_mindist*virtual_stick_mindist;
+        recompute_vpad_pos(width,height);
         
         
         switch (conf.rendermode) {
@@ -249,6 +322,16 @@ blitter_opengl_update() {
                     rheight=width*3/4;
                 }
                 break;
+            case 3: 
+                rwidth=width/(visible_area.w+visible_area.x);
+                rwidth=rwidth*(visible_area.w+visible_area.x);
+                if (rwidth) {
+                rheight=rwidth*(visible_area.h+visible_area.y)/(visible_area.w+visible_area.x);
+                } else {
+                    rwidth=width;
+                    rheight=width*3/4;
+                }
+                break;
         }
         
         
@@ -262,26 +345,23 @@ blitter_opengl_update() {
         vertices[2][0]=-1; vertices[2][1]=-1;
         vertices[3][0]=1; vertices[3][1]=-1;
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        /* Disable Vertex Pointer */
-        glDisableClientState(GL_VERTEX_ARRAY);
-        /* Disable Texture Coordinations Pointer */
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        
-        glBindTexture(GL_TEXTURE_2D, 0);    /* Bind The Texture */
         
         if (virtual_stick_on) {
             //update viewport to match real device screen
             
-            glViewport(0, 0, width, height);
-            
-            glDisable(GL_TEXTURE_2D);
+            glViewport(0, 0, width, height);                        
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);            
             /* Enable Vertex Pointer */
-            glEnableClientState(GL_VERTEX_ARRAY);        
+            texcoords[0][0]=0; texcoords[0][1]=0;
+            texcoords[1][0]=1; texcoords[1][1]=0;
+            texcoords[2][0]=0; texcoords[2][1]=1;
+            texcoords[3][0]=1; texcoords[3][1]=1;
             
             
             for (int i=0;i<VSTICK_NB_BUTTON;i++) {
+                glBindTexture(GL_TEXTURE_2D, vpad_button_text[i]);    /* Bind The Texture */
+                
                 vertices[0][0]=(float)(virtual_stick[i].x)/cur_width;
                 vertices[0][1]=(float)(virtual_stick[i].y)/cur_height;
                 
@@ -309,17 +389,39 @@ blitter_opengl_update() {
                 glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
             }
             
+            glBindTexture(GL_TEXTURE_2D, vpad_button_text[8]);    /* Bind The Texture */
+            vertices[0][0]=(float)(virtual_stick_posx-virtual_stick_maxdist)/cur_width;
+            vertices[0][1]=(float)(virtual_stick_posy+virtual_stick_maxdist)/cur_height;            
+            vertices[1][0]=(float)(virtual_stick_posx+virtual_stick_maxdist)/cur_width;;
+            vertices[1][1]=(float)(virtual_stick_posy+virtual_stick_maxdist)/cur_height;            
+            vertices[2][0]=(float)(virtual_stick_posx-virtual_stick_maxdist)/cur_width;
+            vertices[2][1]=(float)(virtual_stick_posy-virtual_stick_maxdist)/cur_height;            
+            vertices[3][0]=(float)(virtual_stick_posx+virtual_stick_maxdist)/cur_width;
+            vertices[3][1]=(float)(virtual_stick_posy-virtual_stick_maxdist)/cur_height;
+            
+            vertices[0][0]=vertices[0][0]*2-1;
+            vertices[1][0]=vertices[1][0]*2-1;
+            vertices[2][0]=vertices[2][0]*2-1;
+            vertices[3][0]=vertices[3][0]*2-1;
+            vertices[0][1]=-vertices[0][1]*2+1;
+            vertices[1][1]=-vertices[1][1]*2+1;
+            vertices[2][1]=-vertices[2][1]*2+1;
+            vertices[3][1]=-vertices[3][1]*2+1;
+            glColor4ub(250,245,255,virtual_stick_buttons_alpha);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            
+            glDisable(GL_TEXTURE_2D);
             
             //now the stick
             for (int i=0;i<4;i++) {
             vertices[0][0]=(float)(virtual_stick_posx+0.9f*virtual_stick_maxdist*cosf(i*M_PI/2))/cur_width;
             vertices[0][1]=(float)(virtual_stick_posy-0.9f*virtual_stick_maxdist*sinf(i*M_PI/2))/cur_height;
             
-            vertices[1][0]=(float)(virtual_stick_posx+0.6f*virtual_stick_maxdist*cosf(i*M_PI/2+M_PI/16))/cur_width;
-            vertices[1][1]=(float)(virtual_stick_posy-0.6f*virtual_stick_maxdist*sinf(i*M_PI/2+M_PI/16))/cur_height;
+            vertices[1][0]=(float)(virtual_stick_posx+0.6f*virtual_stick_maxdist*cosf(i*M_PI/2+M_PI/8))/cur_width;
+            vertices[1][1]=(float)(virtual_stick_posy-0.6f*virtual_stick_maxdist*sinf(i*M_PI/2+M_PI/8))/cur_height;
             
-            vertices[2][0]=(float)(virtual_stick_posx+0.6f*virtual_stick_maxdist*cosf(i*M_PI/2-M_PI/16))/cur_width;
-            vertices[2][1]=(float)(virtual_stick_posy-0.6f*virtual_stick_maxdist*sinf(i*M_PI/2-M_PI/16))/cur_height;
+            vertices[2][0]=(float)(virtual_stick_posx+0.6f*virtual_stick_maxdist*cosf(i*M_PI/2-M_PI/8))/cur_width;
+            vertices[2][1]=(float)(virtual_stick_posy-0.6f*virtual_stick_maxdist*sinf(i*M_PI/2-M_PI/8))/cur_height;
             
             vertices[0][0]=vertices[0][0]*2-1;
             vertices[1][0]=vertices[1][0]*2-1;
@@ -356,7 +458,7 @@ blitter_opengl_update() {
             }
             
             //horizontal
-            vertices[0][0]=(float)(virtual_stick_posx-virtual_stick_maxdist)/cur_width;
+         /*   vertices[0][0]=(float)(virtual_stick_posx-virtual_stick_maxdist)/cur_width;
             vertices[0][1]=(float)(virtual_stick_posy+virtual_stick_mindist)/cur_height;            
             vertices[1][0]=(float)(virtual_stick_posx-virtual_stick_mindist)/cur_width;;
             vertices[1][1]=(float)(virtual_stick_posy+virtual_stick_mindist)/cur_height;            
@@ -441,11 +543,16 @@ blitter_opengl_update() {
             
             
             glColor4ub(250,245,255,virtual_stick_buttons_alpha);
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);*/
             
             glDisable(GL_BLEND);
-            glEnable(GL_TEXTURE_2D);
+            glDisable(GL_TEXTURE_2D);
+        } else {
+            /* Disable Vertex Pointer */
+            glDisableClientState(GL_VERTEX_ARRAY);
+            /* Disable Texture Coordinations Pointer */
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);        
+            glDisable(GL_TEXTURE_2D);
         }
     } 
 	

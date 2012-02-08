@@ -91,6 +91,8 @@ struct {
     int p2_hotkey[4];
     
     int rendermode;
+    int vpad_alpha;
+    int wiimote;//btstack
 } conf;
 
 enum {

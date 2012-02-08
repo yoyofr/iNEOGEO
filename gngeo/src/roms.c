@@ -1752,6 +1752,7 @@ int read_region(FILE *gno, GAME_ROMS *roms) {
 
 int dr_open_gno(char *filename) {
 	FILE *gno;
+    char tmpfname[64];
 	char fid[9]; // = "gnodmpv1";
 	char name[9] = {0,};
 	GAME_ROMS *r = &memory.rom;
@@ -1759,6 +1760,8 @@ int dr_open_gno(char *filename) {
 	int i;
 	char *a;
 	size_t totread = 0;
+    
+    sprintf(tmpfname,"../Documents/%s",filename);
 
 	memory.bksw_handler = 0;
 	memory.bksw_unscramble = NULL;
@@ -1766,7 +1769,7 @@ int dr_open_gno(char *filename) {
 
 	need_decrypt = 0;
 
-	gno = fopen(filename, "rb");
+	gno = fopen(tmpfname, "rb");
 	if (!gno)
 		return FALSE;
 
