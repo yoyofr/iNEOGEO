@@ -124,6 +124,8 @@ void cf_cache_conf(void) {
 	char *system;
 	/* cache some frequently used conf item */
 	//	printf("Update Conf Cache, sample rate=%d -> %d\n",conf.sample_rate,CF_VAL(cf_get_item_by_name("samplerate")));
+    conf.rendermode = CF_VAL(cf_get_item_by_name("rendermode"));
+    
 	conf.sound = CF_BOOL(cf_get_item_by_name("sound"));
 	conf.vsync = CF_BOOL(cf_get_item_by_name("vsync"));
 	conf.sample_rate = CF_VAL(cf_get_item_by_name("samplerate"));
@@ -406,7 +408,7 @@ void cf_init(void) {
 	cf_create_bool_item("sound", "Enable sound", 0, true);
 	cf_create_bool_item("showfps", "Show FPS at startup", 0, false);
 
-	cf_create_bool_item("sleepidle", "Sleep when idle", 0, false);
+	cf_create_bool_item("sleepidle", "Sleep when idle", 0, true);
 	cf_create_bool_item("joystick", "Enable joystick support", 0, true);
 	cf_create_bool_item("debug", "Start with inline debuger", 'D', false);
 	cf_create_bool_item("hwsurface", "Use hardware surface for the screen", 'H', true);
@@ -726,13 +728,14 @@ bool cf_open_file(char *filename) {
 		//sscanf(buf, "%s ", name);
 		//strncpy(val,buf+strlen(name)+1,254);
 
-		//printf("%s|%s|\n",name,val);
+//		printf("%s|%s|\n",name,val);
 		cf = cf_get_item_by_name(name);
 		if (cf && !(cf->flags & CF_SETBYCMD) && (!cf->modified)) {
 //			printf("Option %s\n",cf->name);
 			switch (cf->type) {
 				case CFT_INT:
 					CF_VAL(cf) = atoi(val);
+//                    printf("got val: %d\n",CF_VAL(cf));
 					break;
 				case CFT_BOOLEAN:
 					CF_BOOL(cf) = (strcasecmp(val, "true") == 0 ? true : false);

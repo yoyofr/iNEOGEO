@@ -174,7 +174,7 @@ int gnmain(int argc, char *argv[])
     cf_open_file(NULL); /* Open Default configuration file */
 
     rom_name=cf_parse_cmd_line(argc,argv);
-
+    
     /* print effect/blitter list if asked by user */
     if (!strcmp(CF_STR(cf_get_item_by_name("effect")),"help")) {
         print_effect_list();

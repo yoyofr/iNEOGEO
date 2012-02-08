@@ -23,8 +23,8 @@
 
 //#define TEXMIN256
 
-static GLfloat vertices[4][2];  /* Holds Float Info For 4 Sets Of Vertices */
-static GLfloat texcoords[4][2]; /* Holds Float Info For 4 Sets Of Texture coordinates. */
+static GLfloat vertices[5][2];  /* Holds Float Info For 4 Sets Of Vertices */
+static GLfloat texcoords[5][2]; /* Holds Float Info For 4 Sets Of Texture coordinates. */
 static GLuint txtnumber;
 
 
@@ -311,15 +311,15 @@ blitter_opengl_update() {
             
             
             //now the stick
-            for (int i=0;i<8;i++) {
-            vertices[0][0]=(float)(virtual_stick_posx+0.9f*virtual_stick_maxdist*cosf(i*M_PI/4))/cur_width;
-            vertices[0][1]=(float)(virtual_stick_posy-0.9f*virtual_stick_maxdist*sinf(i*M_PI/4))/cur_height;
+            for (int i=0;i<4;i++) {
+            vertices[0][0]=(float)(virtual_stick_posx+0.9f*virtual_stick_maxdist*cosf(i*M_PI/2))/cur_width;
+            vertices[0][1]=(float)(virtual_stick_posy-0.9f*virtual_stick_maxdist*sinf(i*M_PI/2))/cur_height;
             
-            vertices[1][0]=(float)(virtual_stick_posx+0.6f*virtual_stick_maxdist*cosf(i*M_PI/4+M_PI/16))/cur_width;
-            vertices[1][1]=(float)(virtual_stick_posy-0.6f*virtual_stick_maxdist*sinf(i*M_PI/4+M_PI/16))/cur_height;
+            vertices[1][0]=(float)(virtual_stick_posx+0.6f*virtual_stick_maxdist*cosf(i*M_PI/2+M_PI/16))/cur_width;
+            vertices[1][1]=(float)(virtual_stick_posy-0.6f*virtual_stick_maxdist*sinf(i*M_PI/2+M_PI/16))/cur_height;
             
-            vertices[2][0]=(float)(virtual_stick_posx+0.6f*virtual_stick_maxdist*cosf(i*M_PI/4-M_PI/16))/cur_width;
-            vertices[2][1]=(float)(virtual_stick_posy-0.6f*virtual_stick_maxdist*sinf(i*M_PI/4-M_PI/16))/cur_height;
+            vertices[2][0]=(float)(virtual_stick_posx+0.6f*virtual_stick_maxdist*cosf(i*M_PI/2-M_PI/16))/cur_width;
+            vertices[2][1]=(float)(virtual_stick_posy-0.6f*virtual_stick_maxdist*sinf(i*M_PI/2-M_PI/16))/cur_height;
             
             vertices[0][0]=vertices[0][0]*2-1;
             vertices[1][0]=vertices[1][0]*2-1;
@@ -328,12 +328,122 @@ blitter_opengl_update() {
             vertices[1][1]=-vertices[1][1]*2+1;
             vertices[2][1]=-vertices[2][1]*2+1;
             
+        /*
+         
+          1
+         
+    2         0
+         
+          3
+         
+         
+             3/1/1
+       4/1/2        2/0/1
+5/2/2                      1/0/0
+       6/2/3         8/3/4
+             7/3/3
+         
+         
+         */
                 
-                if (virtual_stick_pad==i+1) glColor4ub(240,220,255,virtual_stick_buttons_alpha2);
-                else glColor4ub(240,220,255,virtual_stick_buttons_alpha);
+                if (virtual_stick_pad) {
+                    if (((virtual_stick_pad-1)>>1==i)||((((virtual_stick_pad)>>1)&3)==i)) glColor4ub(250,245,255,virtual_stick_buttons_alpha2);
+                    else glColor4ub(250,245,255,virtual_stick_buttons_alpha);
+                } else glColor4ub(250,245,255,virtual_stick_buttons_alpha);
+                
             
             glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
             }
+            
+            //horizontal
+            vertices[0][0]=(float)(virtual_stick_posx-virtual_stick_maxdist)/cur_width;
+            vertices[0][1]=(float)(virtual_stick_posy+virtual_stick_mindist)/cur_height;            
+            vertices[1][0]=(float)(virtual_stick_posx-virtual_stick_mindist)/cur_width;;
+            vertices[1][1]=(float)(virtual_stick_posy+virtual_stick_mindist)/cur_height;            
+            vertices[2][0]=(float)(virtual_stick_posx-virtual_stick_maxdist)/cur_width;
+            vertices[2][1]=(float)(virtual_stick_posy-virtual_stick_mindist)/cur_height;            
+            vertices[3][0]=(float)(virtual_stick_posx-virtual_stick_mindist)/cur_width;
+            vertices[3][1]=(float)(virtual_stick_posy-virtual_stick_mindist)/cur_height;
+            
+            vertices[0][0]=vertices[0][0]*2-1;
+            vertices[1][0]=vertices[1][0]*2-1;
+            vertices[2][0]=vertices[2][0]*2-1;
+            vertices[3][0]=vertices[3][0]*2-1;
+            vertices[0][1]=-vertices[0][1]*2+1;
+            vertices[1][1]=-vertices[1][1]*2+1;
+            vertices[2][1]=-vertices[2][1]*2+1;
+            vertices[3][1]=-vertices[3][1]*2+1;
+            glColor4ub(250,245,255,virtual_stick_buttons_alpha);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            
+            vertices[0][0]=(float)(virtual_stick_posx+virtual_stick_mindist)/cur_width;
+            vertices[0][1]=(float)(virtual_stick_posy+virtual_stick_mindist)/cur_height;            
+            vertices[1][0]=(float)(virtual_stick_posx+virtual_stick_maxdist)/cur_width;;
+            vertices[1][1]=(float)(virtual_stick_posy+virtual_stick_mindist)/cur_height;            
+            vertices[2][0]=(float)(virtual_stick_posx+virtual_stick_mindist)/cur_width;
+            vertices[2][1]=(float)(virtual_stick_posy-virtual_stick_mindist)/cur_height;            
+            vertices[3][0]=(float)(virtual_stick_posx+virtual_stick_maxdist)/cur_width;
+            vertices[3][1]=(float)(virtual_stick_posy-virtual_stick_mindist)/cur_height;
+            
+            vertices[0][0]=vertices[0][0]*2-1;
+            vertices[1][0]=vertices[1][0]*2-1;
+            vertices[2][0]=vertices[2][0]*2-1;
+            vertices[3][0]=vertices[3][0]*2-1;
+            vertices[0][1]=-vertices[0][1]*2+1;
+            vertices[1][1]=-vertices[1][1]*2+1;
+            vertices[2][1]=-vertices[2][1]*2+1;
+            vertices[3][1]=-vertices[3][1]*2+1;
+            
+                        
+            glColor4ub(250,245,255,virtual_stick_buttons_alpha);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            
+            //vertical
+            vertices[0][0]=(float)(virtual_stick_posx-virtual_stick_mindist)/cur_width;
+            vertices[0][1]=(float)(virtual_stick_posy+virtual_stick_maxdist)/cur_height;            
+            vertices[1][0]=(float)(virtual_stick_posx+virtual_stick_mindist)/cur_width;;
+            vertices[1][1]=(float)(virtual_stick_posy+virtual_stick_maxdist)/cur_height;            
+            vertices[2][0]=(float)(virtual_stick_posx-virtual_stick_mindist)/cur_width;
+            vertices[2][1]=(float)(virtual_stick_posy+virtual_stick_mindist)/cur_height;            
+            vertices[3][0]=(float)(virtual_stick_posx+virtual_stick_mindist)/cur_width;
+            vertices[3][1]=(float)(virtual_stick_posy+virtual_stick_mindist)/cur_height;
+            
+            vertices[0][0]=vertices[0][0]*2-1;
+            vertices[1][0]=vertices[1][0]*2-1;
+            vertices[2][0]=vertices[2][0]*2-1;
+            vertices[3][0]=vertices[3][0]*2-1;
+            vertices[0][1]=-vertices[0][1]*2+1;
+            vertices[1][1]=-vertices[1][1]*2+1;
+            vertices[2][1]=-vertices[2][1]*2+1;
+            vertices[3][1]=-vertices[3][1]*2+1;
+            
+            
+            glColor4ub(250,245,255,virtual_stick_buttons_alpha);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            
+            vertices[0][0]=(float)(virtual_stick_posx-virtual_stick_mindist)/cur_width;
+            vertices[0][1]=(float)(virtual_stick_posy-virtual_stick_maxdist)/cur_height;            
+            vertices[1][0]=(float)(virtual_stick_posx+virtual_stick_mindist)/cur_width;;
+            vertices[1][1]=(float)(virtual_stick_posy-virtual_stick_maxdist)/cur_height;            
+            vertices[2][0]=(float)(virtual_stick_posx-virtual_stick_mindist)/cur_width;
+            vertices[2][1]=(float)(virtual_stick_posy-virtual_stick_mindist)/cur_height;            
+            vertices[3][0]=(float)(virtual_stick_posx+virtual_stick_mindist)/cur_width;
+            vertices[3][1]=(float)(virtual_stick_posy-virtual_stick_mindist)/cur_height;
+            
+            vertices[0][0]=vertices[0][0]*2-1;
+            vertices[1][0]=vertices[1][0]*2-1;
+            vertices[2][0]=vertices[2][0]*2-1;
+            vertices[3][0]=vertices[3][0]*2-1;
+            vertices[0][1]=-vertices[0][1]*2+1;
+            vertices[1][1]=-vertices[1][1]*2+1;
+            vertices[2][1]=-vertices[2][1]*2+1;
+            vertices[3][1]=-vertices[3][1]*2+1;
+            
+            
+            glColor4ub(250,245,255,virtual_stick_buttons_alpha);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+            
             glDisable(GL_BLEND);
             glEnable(GL_TEXTURE_2D);
         }

@@ -72,7 +72,7 @@ void get_device_res() {
 int main(int argc, char *argv[])
 {
 #if 1
-    char *gnargv[6]={"gngeo","--blitter=opengl","-f","--bench","viewpoin","--showfps"};
+    char *gnargv[6]={"gngeo","--blitter=opengl","--system=unibios","--bench","viewpoin","--showfps"};
     
 /*    iCadeRView=[[iCadeReaderView alloc] initWithFrame:CGRectZero];
     UIWindow *window=[[UIApplication sharedApplication] keyWindow];		
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     get_device_res();
     device_isSlow=get_device_type();
     
-    gnmain(3,gnargv);
+    gnmain(2,gnargv);
     /* shutdown SDL */
     SDL_Quit();
     exit(0);

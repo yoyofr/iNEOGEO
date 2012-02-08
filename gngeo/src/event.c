@@ -34,12 +34,12 @@ int wm_joy_pl1,wm_joy_pl2;
 int wm_prev_joy_pl1=0;
 int wm_prev_joy_pl2=0;
 
-int virtual_stick_posx=80;
-int virtual_stick_posy=320-80;
-int virtual_stick_maxdist=80;
-int virtual_stick_mindist=10;
-int virtual_stick_maxdist2=80*80;
-int virtual_stick_mindist2=10*10;
+int virtual_stick_posx=70;
+int virtual_stick_posy=320-70;
+int virtual_stick_maxdist=70;
+int virtual_stick_mindist=16;
+int virtual_stick_maxdist2=70*70;
+int virtual_stick_mindist2=16*16;
 float virtual_stick_angle;
 SDL_FingerID virtual_stick_padfinger;
 
