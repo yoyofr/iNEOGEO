@@ -772,7 +772,8 @@ static void draw_menu(GN_MENU *m) {
 	GNFONT *fnt;
 	LIST *l = m->item;
 	int j;
-    char *cur_rom_file=NULL;
+    char cur_rom_file[32];
+    cur_rom_file[0]=0;
 
 	if (m->draw_type == MENU_BIG)
 		fnt = mfont;
@@ -837,7 +838,7 @@ static void draw_menu(GN_MENU *m) {
 			draw_string(menu_buf, fnt, MENU_TEXT_X + 10, MENU_TEXT_Y + (j * fnt->ysize + 2), mi->name);
 			if (i == m->current) {
                 draw_string(menu_buf, fnt, MENU_TEXT_X, MENU_TEXT_Y + (j * fnt->ysize + 2), ">");
-                if (rombrowser_on) cur_rom_file=(char*)(mi->arg);
+                if (rombrowser_on) strcpy(cur_rom_file,(char*)(mi->arg));
             }
 			if (mi->type == MENU_CHECK) {
 				if (mi->val)
@@ -870,7 +871,7 @@ static void draw_menu(GN_MENU *m) {
         draw_string(menu_buf, mfont, 28+18, 50-32, "1P");
         
     }
-    if (cur_rom_file) {
+    if (cur_rom_file[0]) {
         if (strstr(cur_rom_file,".gno")) {
             int i=0;
             while (cur_rom_file[i]) {
