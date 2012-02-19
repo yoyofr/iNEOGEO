@@ -120,6 +120,8 @@ static GN_MENU *rdumper_menu;
 static GN_MENU *option_menu;
 static GN_MENU *effect_menu;
 static GN_MENU *srate_menu;
+static GN_MENU *system_menu;
+static GN_MENU *country_menu;
 static GN_MENU *yesno_menu;
 
 static char *romlist[] = {
@@ -711,7 +713,7 @@ void gn_popup_error(char *name, char *fmt, ...) {
 
 	draw_string(menu_buf, sfont, MENU_TEXT_X, MENU_TEXT_Y, buf);
 
-	draw_string(menu_buf, sfont, ALIGN_RIGHT, ALIGN_DOWN, "Press any key ...");
+	draw_string(menu_buf, sfont, ALIGN_RIGHT, ALIGN_DOWN, "Press any button ...");
 	SDL_BlitSurface(menu_buf, NULL, buffer, NULL);
 	screen_update();
 
@@ -838,7 +840,9 @@ static void draw_menu(GN_MENU *m) {
 			draw_string(menu_buf, fnt, MENU_TEXT_X + 10, MENU_TEXT_Y + (j * fnt->ysize + 2), mi->name);
 			if (i == m->current) {
                 draw_string(menu_buf, fnt, MENU_TEXT_X, MENU_TEXT_Y + (j * fnt->ysize + 2), ">");
-                if (rombrowser_on) strcpy(cur_rom_file,(char*)(mi->arg));
+                if (rombrowser_on) {
+                    if (mi->arg) strcpy(cur_rom_file,(char*)(mi->arg));
+                }
             }
 			if (mi->type == MENU_CHECK) {
 				if (mi->val)
@@ -1091,11 +1095,30 @@ static int credit_action(GN_MENU_ITEM *self, void *param) {
 	return MENU_STAY;
 }
 
+#define VERSION_MAJ 0
+#define VERSION_MIN 2
+static int help_action(GN_MENU_ITEM *self, void *param) {
+    gn_popup_info("Help","[iNEOGEO v%.1d.%.1d] by YoyoFR\nBased on great GnGeo from Mathieu Peponas\n\n*Use iTunes to upload ROMS in iNEOGEO.\n*Formats accepted are .ZIP and .GNO.\n*For large roms which cannot be loaded, please use\nGnGeo to create a .GNO dump\n\n* BTStack should be installed for Wiimotes support.",VERSION_MAJ,VERSION_MIN);
+	return MENU_STAY;
+}
+
 static int exit_action(GN_MENU_ITEM *self, void *param) {
 	//exit(0);
 //	if (gn_popup_question("Quit?","Do you really want to quit gngeo?")==0)
 //		return 0;
 	return MENU_EXIT;
+}
+
+static int feedback_action(GN_MENU_ITEM *self, void *param) {
+	//exit(0);
+    //	if (gn_popup_question("Quit?","Do you really want to quit gngeo?")==0)
+    //		return 0;
+	//return MENU_EXIT;
+    tfl_askfeedback();
+    while (tfl_feedbackdone()==0) {
+        wait_event();
+    }
+    return MENU_STAY;
 }
 
 int menu_event_handling(struct GN_MENU *self) {
@@ -1129,6 +1152,9 @@ int menu_event_handling(struct GN_MENU *self) {
 			if (self->current >= self->nb_elem) self->current = self->nb_elem - 1;
 			break;
 		case GN_B:
+			return MENU_CLOSE;
+			break;
+        case GN_MENU_KEY:
 			return MENU_CLOSE;
 			break;
 		case GN_A:
@@ -1700,6 +1726,117 @@ static int change_samplerate(GN_MENU_ITEM *self, void *param) {
 	return 0;
 }
 
+static int change_system_action(GN_MENU_ITEM *self, void *param) {
+	char *system = (char*) self->arg;
+    
+		strcpy(CF_STR(cf_get_item_by_name("system")),system);
+		cf_item_has_been_changed(cf_get_item_by_name("system"));
+        if (!strcmp(system, "unibios")) {
+            conf.system = SYS_UNIBIOS;
+        } else {
+            if (!strcmp(system, "home")) {
+                conf.system = SYS_HOME;
+            } else {
+                conf.system = SYS_ARCADE;
+            }
+        }
+    
+	return MENU_CLOSE;
+}
+
+static int change_system(GN_MENU_ITEM *self, void *param) {
+	static int init = 0;
+	int a;
+	GN_MENU_ITEM *gitem;
+	if (init == 0) {
+		init = 1;
+		system_menu = create_menu("Choose a system", MENU_SMALL, NULL, NULL);
+		gitem = gn_menu_create_item("arcade", MENU_ACTION,
+                                    change_system_action, (void*) "arcade");
+		system_menu->item = list_append(system_menu->item, (void*) gitem);
+		system_menu->nb_elem++;
+        
+		gitem = gn_menu_create_item("unibios", MENU_ACTION,
+                                    change_system_action, (void*) "unibios");
+		system_menu->item = list_append(system_menu->item, (void*) gitem);
+		system_menu->nb_elem++;
+        
+		gitem = gn_menu_create_item("home", MENU_ACTION,
+                                    change_system_action, (void*) "home");
+		system_menu->item = list_append(system_menu->item, (void*) gitem);
+		system_menu->nb_elem++;
+	}
+    
+	while (1) {
+		system_menu->draw(system_menu);
+		if ((a = system_menu->event_handling(system_menu)) > 0) {
+            sprintf(self->str, "%s", CF_STR(cf_get_item_by_name("system")));
+            
+			return MENU_STAY;
+		}
+	}
+	return 0;
+}
+
+static int change_country_action(GN_MENU_ITEM *self, void *param) {
+	char *country = (char*) self->arg;
+    
+    strcpy(CF_STR(cf_get_item_by_name("country")),country);
+    cf_item_has_been_changed(cf_get_item_by_name("country"));
+    if (!strcmp(country, "japan")) {
+        conf.country = CTY_JAPAN;
+    } else {
+        if (!strcmp(country, "europe")) {
+            conf.country = CTY_EUROPE;
+        } if (!strcmp(country, "usa")) { 
+            conf.country = CTY_USA;
+        } else {
+            conf.country = CTY_ASIA;
+        }
+    }
+	return MENU_CLOSE;
+}
+
+static int change_country(GN_MENU_ITEM *self, void *param) {
+	static int init = 0;
+	int a;
+	GN_MENU_ITEM *gitem;
+	if (init == 0) {
+		init = 1;
+		country_menu = create_menu("Choose a country", MENU_SMALL, NULL, NULL);
+		gitem = gn_menu_create_item("japan", MENU_ACTION,
+                                    change_country_action, (void*) "japan");
+		country_menu->item = list_append(country_menu->item, (void*) gitem);
+		country_menu->nb_elem++;
+        
+		gitem = gn_menu_create_item("europe", MENU_ACTION,
+                                    change_country_action, (void*) "europe");
+		country_menu->item = list_append(country_menu->item, (void*) gitem);
+		country_menu->nb_elem++;
+        
+		gitem = gn_menu_create_item("usa", MENU_ACTION,
+                                    change_country_action, (void*) "usa");
+		country_menu->item = list_append(country_menu->item, (void*) gitem);
+		country_menu->nb_elem++;
+        
+        gitem = gn_menu_create_item("asia", MENU_ACTION,
+                                    change_country_action, (void*) "asia");
+		country_menu->item = list_append(country_menu->item, (void*) gitem);
+		country_menu->nb_elem++;
+	}
+    
+	while (1) {
+		country_menu->draw(country_menu);
+		if ((a = country_menu->event_handling(country_menu)) > 0) {
+            sprintf(self->str, "%s", CF_STR(cf_get_item_by_name("country")));
+            
+			return MENU_STAY;
+		}
+	}
+	return 0;
+}
+
+
 static int save_conf_action(GN_MENU_ITEM *self, void *param) {
 	int type = (int) self->arg;
 	if (type == 0)
@@ -1736,6 +1873,26 @@ static void reset_menu_option(void) {
     gitem=gn_menu_get_item_by_name(option_menu,"Bluetooth");
 	if (conf.wiimote) sprintf(gitem->str, "Wiimote");
     else sprintf(gitem->str, "ICade");
+    
+    /* update system in case it was forced at launch due to missing file */
+    switch (conf.system) {
+        case SYS_ARCADE:strcpy(CF_STR(cf_get_item_by_name("system")),"arcade");break;
+        case SYS_UNIBIOS:strcpy(CF_STR(cf_get_item_by_name("system")),"unibios");break;
+        case SYS_HOME:strcpy(CF_STR(cf_get_item_by_name("system")),"home");break;
+    }
+    gitem=gn_menu_get_item_by_name(option_menu,"System");
+    sprintf(gitem->str, "%s", CF_STR(cf_get_item_by_name("system")));
+    
+    /* update country in case it was forced at launch due to missing file */
+    switch (conf.country) {
+        case CTY_JAPAN:strcpy(CF_STR(cf_get_item_by_name("country")),"japan");break;
+        case CTY_EUROPE:strcpy(CF_STR(cf_get_item_by_name("country")),"europe");break;
+        case CTY_USA:strcpy(CF_STR(cf_get_item_by_name("country")),"usa");break;
+        case CTY_ASIA:strcpy(CF_STR(cf_get_item_by_name("country")),"asia");break;
+    }
+    gitem=gn_menu_get_item_by_name(option_menu,"Country (for ARCADE system)");
+    sprintf(gitem->str, "%s", CF_STR(cf_get_item_by_name("country")));
+
     
 //    RESET_BOOL("Fullscreen","fullscreen");
 //	RESET_BOOL("Vsync","vsync");
@@ -1796,6 +1953,14 @@ void gn_init_menu(void) {
 			(void*) gn_menu_create_item("Credit", MENU_ACTION, credit_action, NULL));
 	main_menu->nb_elem++;
 */
+    
+    main_menu->item = list_append(main_menu->item,
+                                  (void*) gn_menu_create_item("Feedback", MENU_ACTION, feedback_action, NULL));
+	main_menu->nb_elem++;
+    
+    main_menu->item = list_append(main_menu->item,
+                                  (void*) gn_menu_create_item("Help", MENU_ACTION, help_action, NULL));
+	main_menu->nb_elem++;
 
 	main_menu->item = list_append(main_menu->item,
 			(void*) gn_menu_create_item("Exit", MENU_ACTION, exit_action, NULL));
@@ -1856,6 +2021,18 @@ void gn_init_menu(void) {
 	gitem->str = CF_STR(cf_get_item_by_name("effect"));
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
 	option_menu->nb_elem++;*/
+    
+    gitem = gn_menu_create_item("System", MENU_LIST, change_system, NULL);
+	gitem->str = malloc(32);
+    sprintf(gitem->str, "%s", CF_STR(cf_get_item_by_name("system")));
+	option_menu->item = list_append(option_menu->item, (void*) gitem);
+	option_menu->nb_elem++;
+    
+    gitem = gn_menu_create_item("Country (for ARCADE system)", MENU_LIST, change_country, NULL);
+	gitem->str = malloc(32);
+    sprintf(gitem->str, "%s", CF_STR(cf_get_item_by_name("country")));
+	option_menu->item = list_append(option_menu->item, (void*) gitem);
+	option_menu->nb_elem++;
 
 	gitem = gn_menu_create_item("Sample Rate", MENU_LIST, change_samplerate, NULL);
 	gitem->str = malloc(32);
@@ -1894,7 +2071,8 @@ Uint32 run_menu(void) {
 	}
     
     if (conf.wiimote) startWiimoteDetection();
-
+    
+    
     
 	init_back();
     rombrowser_on=0;

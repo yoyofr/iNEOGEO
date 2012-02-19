@@ -272,14 +272,16 @@ bool load_game_config(char *rom_name) {
 }
 
 bool init_game(char *rom_name) {
-printf("AAA Blitter %s effect %s\n",CF_STR(cf_get_item_by_name("blitter")),CF_STR(cf_get_item_by_name("effect")));
-
+/*printf("AAA Blitter %s effect %s\n",CF_STR(cf_get_item_by_name("blitter")),CF_STR(cf_get_item_by_name("effect")));
+*/
+    tstfl_startloadgame(rom_name);
+    
 	load_game_config(rom_name);
 	/* reinit screen if necessary */
 	//screen_change_blitter_and_effect(NULL,NULL);
 	reset_frame_skip();
 	screen_reinit();
-	printf("BBB Blitter %s effect %s\n",CF_STR(cf_get_item_by_name("blitter")),CF_STR(cf_get_item_by_name("effect")));
+//	printf("BBB Blitter %s effect %s\n",CF_STR(cf_get_item_by_name("blitter")),CF_STR(cf_get_item_by_name("effect")));
     /* open transpack if need */
     trans_pack_open(CF_STR(cf_get_item_by_name("transpack")));
 
@@ -317,6 +319,7 @@ printf("AAA Blitter %s effect %s\n",CF_STR(cf_get_item_by_name("blitter")),CF_ST
 	memory.vid.currentpal=0;
 	memory.vid.currentfix=0;
 
+    tstfl_validateloadgame(rom_name);
 
     return true;
 }

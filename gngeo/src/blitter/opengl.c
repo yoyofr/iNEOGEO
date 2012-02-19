@@ -44,10 +44,13 @@ static int vpad_button_text_w[VSTICK_NB_BUTTON+1],vpad_button_text_h[VSTICK_NB_B
 extern int device_w,device_h;
 extern int cur_width,cur_height;
 extern t_touch_area *virtual_stick;
+extern t_touch_area virtual_stick_iphone_landscape[VSTICK_NB_BUTTON],virtual_stick_iphone_portrait[VSTICK_NB_BUTTON];
+extern t_touch_area virtual_stick_ipad_landscape[VSTICK_NB_BUTTON],virtual_stick_ipad_portrait[VSTICK_NB_BUTTON];
 extern int virtual_stick_on,virtual_stick_pad;
 extern Uint8 virtual_stick_buttons_alpha,virtual_stick_buttons_alpha2;
 extern int virtual_stick_posx,virtual_stick_posy,virtual_stick_mindist,virtual_stick_maxdist;
 extern int virtual_stick_mindist2,virtual_stick_maxdist2;
+extern int device_isIpad;
 
 void recompute_vpad_pos(int width,int height) {
     switch (height) {
@@ -294,6 +297,14 @@ blitter_opengl_update() {
         SDL_GetWindowSize(video_opengl, &width, &height);
         cur_width=width;
         cur_height=height;
+        
+        if (device_isIpad) {
+            if (cur_width>cur_height) virtual_stick=virtual_stick_ipad_landscape;
+            else virtual_stick=virtual_stick_ipad_portrait;
+        } else {
+            if (cur_width>cur_height) virtual_stick=virtual_stick_iphone_landscape;
+            else virtual_stick=virtual_stick_iphone_portrait;
+        }
         
         recompute_vpad_pos(width,height);
         

@@ -11,9 +11,37 @@
 #include <sys/sysctl.h>
 #include <UIKit/UIDevice.h>
 
+#import "TestFlight.h"
+
 int device_w,device_h,device_isSlow,device_isIpad;
 int cur_width,cur_height;
+static UIWindow *win1,*win2;
 extern int gnmain(int argc, char *argv[]);
+//***************************************
+//         TESTFLIGHT Functions
+//***************************************
+void tfl_askfeedback(){
+    win1=[[UIApplication sharedApplication] keyWindow];
+//    NSLog(@"win: %08X %d",(int)win1,[[win1 subviews] count]);
+    [TestFlight openFeedbackView];
+}
+int tfl_feedbackdone(){
+    win2=[[UIApplication sharedApplication] keyWindow];
+//    NSLog(@"win: %08X %d",(int)win2,[[win2 subviews] count]);
+   [NSThread sleepForTimeInterval:0.1];
+    return win2==win1;
+}
+void tstfl_log(char *str) {
+    TFLog(@"%s",str);
+}
+
+void tstfl_startloadgame(char *name) {
+    TFLog(@"Loading: %s",name);
+}
+void tstfl_validateloadgame(char *name) {
+    [TestFlight passCheckpoint:[NSString stringWithFormat:@"LOADGAME-%s",name]];
+}
+
 
 //******************************************************************
 // get_device_type

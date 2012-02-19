@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		33163A2B14D411F700144960 /* video_arm.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 33163A2A14D411F600144960 /* video_arm.o */; };
+		33270E3A14F03A8000C60A2E /* libBTstack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BB810B14D54FA600EA4B32 /* libBTstack.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		33270E9014F0729800C60A2E /* DrZ80.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 33F60AB114D35257009ABA8F /* DrZ80.o */; };
 		3340AF9214CC050300C4D1B0 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3340AF9114CC050300C4D1B0 /* Default@2x.png */; };
 		3340AF9414CC051600C4D1B0 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 3340AF9314CC051600C4D1B0 /* Default-Landscape~ipad.png */; };
 		3340AF9614CC051A00C4D1B0 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 3340AF9514CC051A00C4D1B0 /* Default-Portrait~ipad.png */; };
@@ -28,18 +30,12 @@
 		33B2330014C7459E009AF545 /* conf.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2324F14C7459E009AF545 /* conf.c */; };
 		33B2330114C7459E009AF545 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2325214C7459E009AF545 /* debug.c */; };
 		33B2330B14C7459E009AF545 /* hq2x.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2325F14C7459E009AF545 /* hq2x.c */; };
-		33B2330C14C7459E009AF545 /* hq2x.dat in Resources */ = {isa = PBXBuildFile; fileRef = 33B2326014C7459E009AF545 /* hq2x.dat */; };
 		33B2330D14C7459E009AF545 /* hq3x.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2326214C7459E009AF545 /* hq3x.c */; };
-		33B2330E14C7459E009AF545 /* hq3x.dat in Resources */ = {isa = PBXBuildFile; fileRef = 33B2326314C7459E009AF545 /* hq3x.dat */; };
 		33B2330F14C7459E009AF545 /* hqx_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2326514C7459E009AF545 /* hqx_common.c */; };
 		33B2331014C7459E009AF545 /* interp.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2326714C7459E009AF545 /* interp.c */; };
 		33B2331114C7459E009AF545 /* lq2x.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2326914C7459E009AF545 /* lq2x.c */; };
-		33B2331214C7459E009AF545 /* lq2x.dat in Resources */ = {isa = PBXBuildFile; fileRef = 33B2326A14C7459E009AF545 /* lq2x.dat */; };
 		33B2331314C7459E009AF545 /* lq3x.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2326C14C7459E009AF545 /* lq3x.c */; };
-		33B2331414C7459E009AF545 /* lq3x.dat in Resources */ = {isa = PBXBuildFile; fileRef = 33B2326D14C7459E009AF545 /* lq3x.dat */; };
 		33B2331514C7459E009AF545 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 33B2326F14C7459E009AF545 /* Makefile */; };
-		33B2331614C7459E009AF545 /* Makefile.am in Resources */ = {isa = PBXBuildFile; fileRef = 33B2327014C7459E009AF545 /* Makefile.am */; };
-		33B2331714C7459E009AF545 /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = 33B2327114C7459E009AF545 /* Makefile.in */; };
 		33B2331814C7459E009AF545 /* sai.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2327214C7459E009AF545 /* sai.c */; };
 		33B2331914C7459E009AF545 /* scale2x.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2327314C7459E009AF545 /* scale2x.c */; };
 		33B2331A14C7459E009AF545 /* scanline.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B2327614C7459E009AF545 /* scanline.c */; };
@@ -98,10 +94,10 @@
 		33B233DA14CB652D009AF545 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 33B233D914CB6529009AF545 /* Default.png */; };
 		33B233DC14CB653D009AF545 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 33B233DB14CB653B009AF545 /* Icon.png */; };
 		33B233DE14CB6544009AF545 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 33B233DD14CB6541009AF545 /* Icon@2x.png */; };
-		33BB810C14D54FA700EA4B32 /* libBTstack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BB810B14D54FA600EA4B32 /* libBTstack.dylib */; };
 		33F60AA614D34847009ABA8F /* Cyclone.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 33F60A9C14D34847009ABA8F /* Cyclone.o */; };
 		33F60AAE14D34847009ABA8F /* cyclone_interf.c in Sources */ = {isa = PBXBuildFile; fileRef = 33F60AA414D34847009ABA8F /* cyclone_interf.c */; };
 		33F60AC014D35258009ABA8F /* drz80_interf.c in Sources */ = {isa = PBXBuildFile; fileRef = 33F60AB814D35257009ABA8F /* drz80_interf.c */; };
+		33FA539A14EF9EBF00E00348 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 33FA539614EF9EBF00E00348 /* libTestFlight.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,13 +107,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = FD6526630DE8FCCB002AD96B;
 			remoteInfo = libSDL;
-		};
-		33B230D114C6AE89009AF545 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 33B230C914C6AE89009AF545 /* SDL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 006E982211955059001DE610;
-			remoteInfo = testsdl;
 		};
 		33B230F414C6AF41009AF545 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -299,6 +288,11 @@
 		33F60AB114D35257009ABA8F /* DrZ80.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = DrZ80.o; sourceTree = "<group>"; };
 		33F60AB214D35257009ABA8F /* DrZ80.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = DrZ80.s; sourceTree = "<group>"; };
 		33F60AB814D35257009ABA8F /* drz80_interf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = drz80_interf.c; sourceTree = "<group>"; };
+		33FA539614EF9EBF00E00348 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
+		33FA539714EF9EBF00E00348 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		33FA539814EF9EBF00E00348 /* release_notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.txt; sourceTree = "<group>"; };
+		33FA539914EF9EBF00E00348 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
+		33FA53A414EFA3FE00E00348 /* iNEOGEO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = iNEOGEO.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -317,7 +311,9 @@
 				33B230B714C6AE3C009AF545 /* CoreGraphics.framework in Frameworks */,
 				33F60AA614D34847009ABA8F /* Cyclone.o in Frameworks */,
 				33163A2B14D411F700144960 /* video_arm.o in Frameworks */,
-				33BB810C14D54FA700EA4B32 /* libBTstack.dylib in Frameworks */,
+				33FA539A14EF9EBF00E00348 /* libTestFlight.a in Frameworks */,
+				33270E3A14F03A8000C60A2E /* libBTstack.dylib in Frameworks */,
+				33270E9014F0729800C60A2E /* DrZ80.o in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +330,7 @@
 		33B230A314C6AE3C009AF545 = {
 			isa = PBXGroup;
 			children = (
+				33FA539514EF9EBF00E00348 /* TestFlightSDK0.8.3 */,
 				3340AF9714CC053C00C4D1B0 /* Icon-72.png */,
 				3340AF9514CC051A00C4D1B0 /* Default-Portrait~ipad.png */,
 				3340AF9314CC051600C4D1B0 /* Default-Landscape~ipad.png */,
@@ -375,6 +372,7 @@
 		33B230B814C6AE3C009AF545 /* iNEOGEO */ = {
 			isa = PBXGroup;
 			children = (
+				33FA53A414EFA3FE00E00348 /* iNEOGEO.entitlements */,
 				33B262B014DBD415009F792A /* Include */,
 				339E992614CCAAD5000B2C79 /* Classes */,
 				33B2336B14C74B0C009AF545 /* Resources */,
@@ -399,7 +397,6 @@
 			isa = PBXGroup;
 			children = (
 				33B230D014C6AE89009AF545 /* libSDL.a */,
-				33B230D214C6AE89009AF545 /* testsdl.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -638,6 +635,17 @@
 			path = drz80;
 			sourceTree = "<group>";
 		};
+		33FA539514EF9EBF00E00348 /* TestFlightSDK0.8.3 */ = {
+			isa = PBXGroup;
+			children = (
+				33FA539614EF9EBF00E00348 /* libTestFlight.a */,
+				33FA539714EF9EBF00E00348 /* README.txt */,
+				33FA539814EF9EBF00E00348 /* release_notes.txt */,
+				33FA539914EF9EBF00E00348 /* TestFlight.h */,
+			);
+			path = TestFlightSDK0.8.3;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -699,13 +707,6 @@
 			remoteRef = 33B230CF14C6AE89009AF545 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		33B230D214C6AE89009AF545 /* testsdl.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = testsdl.app;
-			remoteRef = 33B230D114C6AE89009AF545 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -714,12 +715,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				33B230BD14C6AE3C009AF545 /* InfoPlist.strings in Resources */,
-				33B2330C14C7459E009AF545 /* hq2x.dat in Resources */,
-				33B2330E14C7459E009AF545 /* hq3x.dat in Resources */,
-				33B2331214C7459E009AF545 /* lq2x.dat in Resources */,
-				33B2331414C7459E009AF545 /* lq3x.dat in Resources */,
-				33B2331614C7459E009AF545 /* Makefile.am in Resources */,
-				33B2331714C7459E009AF545 /* Makefile.in in Resources */,
 				33B2337414C74B1E009AF545 /* gngeo_data.zip in Resources */,
 				33B233DA14CB652D009AF545 /* Default.png in Resources */,
 				33B233DC14CB653D009AF545 /* Icon.png in Resources */,
@@ -857,9 +852,10 @@
 					gngeo/src,
 					"../SDL-1.3/include",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -872,7 +868,7 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -883,10 +879,11 @@
 					gngeo/src,
 					"../SDL-1.3/include",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -905,6 +902,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Classes/lib\"",
 					"\"$(SRCROOT)/Lib\"",
+					"\"$(SRCROOT)/TestFlightSDK0.8.3\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -924,11 +922,62 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Classes/lib\"",
 					"\"$(SRCROOT)/Lib\"",
+					"\"$(SRCROOT)/TestFlightSDK0.8.3\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
+		};
+		33FA53F614EFB07100E00348 /* Adhoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					Classes,
+					gngeo/src,
+					"../SDL-1.3/include",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				STRIP_INSTALLED_PRODUCT = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Adhoc;
+		};
+		33FA53F714EFB07100E00348 /* Adhoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "iNEOGEO/iNEOGEO-Prefix.pch";
+				GCC_THUMB_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = "iNEOGEO/iNEOGEO-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Classes/lib\"",
+					"\"$(SRCROOT)/Lib\"",
+					"\"$(SRCROOT)/TestFlightSDK0.8.3\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Adhoc;
 		};
 /* End XCBuildConfiguration section */
 
@@ -938,6 +987,7 @@
 			buildConfigurations = (
 				33B230C414C6AE3C009AF545 /* Debug */,
 				33B230C514C6AE3C009AF545 /* Release */,
+				33FA53F614EFB07100E00348 /* Adhoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -947,6 +997,7 @@
 			buildConfigurations = (
 				33B230C714C6AE3C009AF545 /* Debug */,
 				33B230C814C6AE3C009AF545 /* Release */,
+				33FA53F714EFB07100E00348 /* Adhoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

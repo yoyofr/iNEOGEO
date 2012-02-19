@@ -330,7 +330,7 @@ SDL_bool screen_reinit(void) {
 		scale = 1;
 	else
 		scale = CF_VAL(cf_get_item_by_name("scale"));
-printf("AA Blitter %s effect %s\n",CF_STR(cf_get_item_by_name("blitter")),CF_STR(cf_get_item_by_name("effect")));
+/*printf("AA Blitter %s effect %s\n",CF_STR(cf_get_item_by_name("blitter")),CF_STR(cf_get_item_by_name("effect")));*/
 	screen_change_blitter_and_effect();
 
 	return SDL_TRUE;

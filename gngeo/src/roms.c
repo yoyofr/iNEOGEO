@@ -1226,14 +1226,16 @@ bool dr_load_bios(GAME_ROMS *r) {
 
 	pz = gn_open_zip(fpath);
 	if (pz == NULL) {
-		fprintf(stderr, "Can't open BIOS (%s)\n", fpath);
+		//fprintf(stderr, "Can't open BIOS (%s)\n", fpath);
+        gn_popup_error("Error","Can't open BIOS (%s)\n", fpath);
 		free(fpath);
 		return false;
 	}
 
 	memory.ng_lo = gn_unzip_file_malloc(pz, "000-lo.lo", 0x0, &size);
 	if (memory.ng_lo == NULL) {
-		printf("Couldn't find 000-lo.lo, please check your bios\n");
+		//printf("Couldn't find 000-lo.lo, please check your bios\n");
+        gn_popup_error("Error","Couldn't find 000-lo.lo, please check your bios\n");
 		return false;
 	}
 
@@ -1246,7 +1248,8 @@ bool dr_load_bios(GAME_ROMS *r) {
 			r->bios_sfix.p = gn_unzip_file_malloc(pz, "sfix.sfix", 0x0,
 					&r->bios_sfix.size);
 			if (r->bios_sfix.p == NULL) {
-				printf("Couldn't find sfix.sfx nor sfix.sfix, please check your bios\n");
+				//printf("Couldn't find sfix.sfx nor sfix.sfix, please check your bios\n");
+                gn_popup_error("Error","Couldn't find sfix.sfx nor sfix.sfix, please check your bios\n");
 				return false;
 			}
 		}
@@ -1260,27 +1263,45 @@ bool dr_load_bios(GAME_ROMS *r) {
 
 			/* First check in neogeo.zip */
 			r->bios_m68k.p = gn_unzip_file_malloc(pz, "uni-bios.rom", 0x0, &r->bios_m68k.size);
+            if (r->bios_m68k.p==NULL) r->bios_m68k.p = gn_unzip_file_malloc(pz, "uni-bios_2_3.rom", 0x0, &r->bios_m68k.size);
 			if (r->bios_m68k.p == NULL) {
 				unipath = malloc(strlen(rpath) + strlen("uni-bios.rom") + 2);
 
 				sprintf(unipath, "%s/uni-bios.rom", rpath);
 				f = fopen(unipath, "rb");
+                if (!f) {
+                    sprintf(unipath, "%s/uni-bios_2_3.rom", rpath);
+                    f = fopen(unipath, "rb");
+                }
 				if (!f) { /* TODO: Fallback to arcade mode */
-					fprintf(stderr, "Can't open Universal BIOS (%s)\n", unipath);
+					//fprintf(stderr, "Can't open Universal BIOS (%s)\n", unipath);
+                    gn_popup_error("Error","Can't open Universal BIOS (%s)\nSwitching to arcade mode.", unipath);
 					free(fpath);
 					free(unipath);
-					return false;
-				}
+                    conf.system=SYS_ARCADE;
+					//return false;
+				} else {
 				r->bios_m68k.p = malloc(0x20000);
 				totread = fread(r->bios_m68k.p, 0x20000, 1, f);
 				r->bios_m68k.size = 0x20000;
 				fclose(f);
 				free(unipath);
+                }
 			}
-		} else {
+		}  
 			if (conf.system == SYS_HOME) {
 				romfile = "aes-bios.bin";
-			} else {
+                DEBUG_LOG("Loading %s\n", romfile);
+                r->bios_m68k.p = gn_unzip_file_malloc(pz, romfile, 0x0,
+                                                      &r->bios_m68k.size);
+                if (r->bios_m68k.p == NULL) {
+                    //printf("Couldn't loas bios %s\n", romfile);
+                    gn_popup_error("Error","Couldn't loas bios %s\nSwitching to arcade mode.", romfile);
+                    conf.system=SYS_ARCADE;
+                }
+
+			}
+            if (conf.system == SYS_ARCADE){
 				switch (conf.country) {
 					case CTY_JAPAN:
 						romfile = "vs-bios.rom";
@@ -1295,15 +1316,15 @@ bool dr_load_bios(GAME_ROMS *r) {
 						romfile = "sp-s2.sp1";
 						break;
 				}
+                DEBUG_LOG("Loading %s\n", romfile);
+                r->bios_m68k.p = gn_unzip_file_malloc(pz, romfile, 0x0,
+                                                      &r->bios_m68k.size);
+                if (r->bios_m68k.p == NULL) {
+                    //printf("Couldn't loas bios %s\n", romfile);
+                    gn_popup_error("Error","Couldn't loas bios %s\n", romfile);
+                    goto error;
+                }
 			}
-			DEBUG_LOG("Loading %s\n", romfile);
-			r->bios_m68k.p = gn_unzip_file_malloc(pz, romfile, 0x0,
-					&r->bios_m68k.size);
-			if (r->bios_m68k.p == NULL) {
-				printf("Couldn't loas bios %s\n", romfile);
-				goto error;
-			}
-		}
 	}
 
 	gn_close_zip(pz);
@@ -1362,6 +1383,7 @@ int dr_load_roms(GAME_ROMS *r, char *rom_path, char *name) {
 	/* Open Parent.
 	 For now, only one parent is supported, no recursion
 	 */
+    if (drv->parent) printf("open parent: %s\n",drv->parent);
 	gzp = open_rom_zip(rom_path, drv->parent);
 	if (gzp == NULL) {
 		sprintf(romerror,"Parent %s/%s.zip not found\n", rom_path, name);
@@ -1502,7 +1524,7 @@ bool dr_load_game(char *name) {
 	//GAME_ROMS rom;
 	char *rpath = CF_STR(cf_get_item_by_name("rompath"));
 	int rc;
-	printf("Loading %s/%s.zip\n", rpath, name);
+//	printf("Loading %s/%s.zip\n", rpath, name);
 	memory.bksw_handler = 0;
 	memory.bksw_unscramble = NULL;
 	memory.bksw_offset = NULL;

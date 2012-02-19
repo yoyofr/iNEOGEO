@@ -500,7 +500,6 @@ int cpu_68k_run(Uint32 nb_cycle) {
 		CycloneRun(&MyCyclone);
 		return -MyCyclone.cycles;
 	} else {
-#if 1
 		current_line=0;
 		
 		total_cycles=nb_cycle;
@@ -511,10 +510,6 @@ int cpu_68k_run(Uint32 nb_cycle) {
 			CycloneRun(&MyCyclone);
 			current_line++;
 		}
-#else
-		total_cycles=nb_cycle;MyCyclone.cycles=nb_cycle;	
-		CycloneRun(&MyCyclone);
-#endif
 		return -MyCyclone.cycles;
 	}
 		//return 0;

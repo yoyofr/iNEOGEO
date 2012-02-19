@@ -406,7 +406,7 @@ void cf_init(void) {
 	cf_create_bool_item("dump", "Create a gno dump in the current dir and exit", 0, false);
 
 	cf_create_bool_item("interpolation", "Merge the last frame and the current", 'I', false);
-	cf_create_bool_item("raster", "Enable the raster interrupt", 'r', false);
+	cf_create_bool_item("raster", "Enable the raster interrupt", 'r', true);
 	cf_create_bool_item("sound", "Enable sound", 0, true);
 	cf_create_bool_item("showfps", "Show FPS at startup", 0, false);
 
