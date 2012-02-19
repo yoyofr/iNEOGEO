@@ -1244,7 +1244,7 @@ bool dr_load_bios(GAME_ROMS *r) {
 		r->bios_sfix.p = gn_unzip_file_malloc(pz, "sfix.sfx", 0x0,
 				&r->bios_sfix.size);
 		if (r->bios_sfix.p == NULL) {
-			printf("Couldn't find sfix.sfx, try sfix.sfix\n");
+			//printf("Couldn't find sfix.sfx, try sfix.sfix\n");
 			r->bios_sfix.p = gn_unzip_file_malloc(pz, "sfix.sfix", 0x0,
 					&r->bios_sfix.size);
 			if (r->bios_sfix.p == NULL) {
@@ -1383,7 +1383,7 @@ int dr_load_roms(GAME_ROMS *r, char *rom_path, char *name) {
 	/* Open Parent.
 	 For now, only one parent is supported, no recursion
 	 */
-    if (drv->parent) printf("open parent: %s\n",drv->parent);
+    //if (drv->parent) printf("open parent: %s\n",drv->parent);
 	gzp = open_rom_zip(rom_path, drv->parent);
 	if (gzp == NULL) {
 		sprintf(romerror,"Parent %s/%s.zip not found\n", rom_path, name);
@@ -1879,7 +1879,7 @@ void dr_free_roms(GAME_ROMS *r) {
 	free_region(&r->cpu_z80c);
 
 	if (!memory.vid.spr_cache.data) {
-		printf("Free tiles\n");
+		//printf("Free tiles\n");
 		free_region(&r->tiles);
 	} else {
 		fclose(memory.vid.spr_cache.gno);

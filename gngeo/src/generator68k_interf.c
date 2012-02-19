@@ -257,7 +257,7 @@ void cpu_68k_post_load_state(void)
     regs.sp=asp;
     memcpy(regs.regs,mregs,16*sizeof(Uint32));
     cpu_68k_bankswitch(bankaddress);
-    printf("POSTLOAD %08x %08x %08x\n",pc,sr,mregs[15]);
+    //printf("POSTLOAD %08x %08x %08x\n",pc,sr,mregs[15]);
 }
 void cpu_68k_pre_save_state(void)
 {
@@ -266,7 +266,7 @@ void cpu_68k_pre_save_state(void)
     sr=regs.sr.sr_int;
     asp=regs.sp;
     memcpy(mregs,regs.regs,16*sizeof(Uint32));
-    printf("PRESAVE  %08x %08x %08x\n",pc,sr,mregs[15]);
+    //printf("PRESAVE  %08x %08x %08x\n",pc,sr,mregs[15]);
 }
 static void cpu_68k_init_save_state(void) {
     create_state_register(ST_68k,"dreg",1,(void *)mregs,sizeof(Uint32)*8,REG_UINT32);
@@ -290,7 +290,7 @@ void cpu_68k_mkstate(gzFile *gzf,int mode) {
 
 void cpu_68k_init(void)
 {
-    printf("GEN68k CPU INIT\n");
+    //printf("GEN68k CPU INIT\n");
     //#ifdef WORDS_BIGENDIAN
     
 	cpu68k_clearcache();
@@ -298,7 +298,7 @@ void cpu_68k_init(void)
     if (!CF_BOOL(cf_get_item_by_name("dump"))) {
 		swap_memory(memory.rom.cpu_m68k.p, memory.rom.cpu_m68k.size);
 		if (memory.rom.bios_m68k.p[0]==0x10) {
-			printf("BIOS BYTE1=%08x\n",memory.rom.bios_m68k.p[0]);
+			//printf("BIOS BYTE1=%08x\n",memory.rom.bios_m68k.p[0]);
 			swap_memory(memory.rom.bios_m68k.p, memory.rom.bios_m68k.size);
 		}
 		swap_memory(memory.game_vector, 0x80);

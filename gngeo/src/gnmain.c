@@ -157,7 +157,6 @@ static void catch_me(int signo) {
 int gnmain(int argc, char *argv[])
 {
     char *rom_name;
-    printf("yo\n");
 //	signal(SIGSEGV, catch_me);
     virtual_stick_on=1;
     
@@ -199,7 +198,7 @@ int gnmain(int argc, char *argv[])
 	if (!rom_name) {
 	//	rom_browser_menu();
 		run_menu();
-		printf("GAME %s\n",conf.game);
+		//printf("GAME %s\n",conf.game);
 		if (conf.game==NULL) return 0;
 	} else {
 

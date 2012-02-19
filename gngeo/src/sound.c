@@ -132,7 +132,7 @@ int init_sdl_audio(void)
     desired->userdata = NULL;
     //SDL_OpenAudio(desired, NULL);
     SDL_OpenAudio(desired, obtain);
-    printf("Obtained sample rate: %d\n",obtain->freq);
+    //printf("Obtained sample rate: %d\n",obtain->freq);
     conf.sample_rate=obtain->freq;
     return 1;
 }
@@ -148,7 +148,7 @@ void close_sdl_audio(void) {
 }
 
 void pause_audio(int on) {
-	printf("PAUSE audio %d\n",on);
+	//printf("PAUSE audio %d\n",on);
     SDL_PauseAudio(on);
 }
 
@@ -160,7 +160,7 @@ int buflen=0;
 
 
 void *fill_audio_data(void *ptr) {
-    printf("Update audio\n");
+    //printf("Update audio\n");
 
     while(1) {
 
@@ -222,7 +222,7 @@ int init_sdl_audio(void) {
     if (ioctl(dev_dsp, SNDCTL_DSP_GETBLKSIZE, &buflen) == -1) {
         return 0;
     }
-    printf("Buf Len=%d\n",buflen);
+    //printf("Buf Len=%d\n",buflen);
     buflen*=2;
 
     return 1;

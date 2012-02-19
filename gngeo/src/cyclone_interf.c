@@ -420,11 +420,11 @@ static void cpu_68k_init_save_state(void) {
 	
 }
 void cpu_68k_mkstate(gzFile *gzf,int mode) {
-	printf("Save state mode %s PC=%08x\n",(mode==STREAD?"READ":"WRITE"),MyCyclone.pc-MyCyclone.membase);
+	//printf("Save state mode %s PC=%08x\n",(mode==STREAD?"READ":"WRITE"),MyCyclone.pc-MyCyclone.membase);
 	if (mode==STWRITE) CyclonePack(&MyCyclone, save_buffer);
 	mkstate_data(gzf, save_buffer, 128, mode);
 	if (mode == STREAD) CycloneUnpack(&MyCyclone, save_buffer);
-	printf("Save state Phase 2 PC=%08x\n", (mode == STREAD ? "READ" : "WRITE"), MyCyclone.pc - MyCyclone.membase);
+	//printf("Save state Phase 2 PC=%08x\n", (mode == STREAD ? "READ" : "WRITE"), MyCyclone.pc - MyCyclone.membase);
 }
 int cpu_68k_getcycle(void) {
 	return total_cycles-MyCyclone.cycles;

@@ -614,7 +614,7 @@ int pbar_anim_thread(void *data) {
 
 
 		dst2_r.y = -22 - (p->pos * 64.0) / p->size;
-		x += 3;
+		x += 3;        
 		if (x > gngeo_logo->w)
 			x -= gngeo_logo->w;
 
@@ -631,9 +631,7 @@ int pbar_anim_thread(void *data) {
 
 		SDL_BlitSurface(menu_buf, NULL, buffer, NULL);
 		screen_update();
-		frame_skip(0);
-		
-        printf("TOTO %d %d %d\n",p->pos,p->size,dst2_r.x);
+		frame_skip(0);		        
 	}
 	SDL_BlitSurface(gngeo_logo, NULL, pbar_logo, NULL);
 	SDL_BlitSurface(pbar_logo, &src_r, menu_buf, &dst_r);
@@ -647,7 +645,7 @@ int pbar_anim_manual(void *data) {
 	SDL_Rect src_r = {2, 0, gngeo_logo->w, gngeo_logo->h};
 	SDL_Rect dst_r = {219 + 26, 146 + 16, gngeo_logo->w, gngeo_logo->h};
 	SDL_Rect dst2_r = {0, 0, gngeo_logo->w, gngeo_logo->h};
-	int x = 0;
+	static int x = 0;
 
     if (data) {
 		draw_back();
@@ -1608,6 +1606,16 @@ static int toggle_showfps(GN_MENU_ITEM *self, void *param) {
 	return MENU_STAY;
 }
 
+static int toggle_raster(GN_MENU_ITEM *self, void *param) {
+	self->val = 1 - self->val;
+	conf.raster = self->val;
+	cf_item_has_been_changed(cf_get_item_by_name("raster"));
+	CF_BOOL(cf_get_item_by_name("raster")) = self->val;
+    
+	return MENU_STAY;
+}
+
+
 static int change_effect_action(GN_MENU_ITEM *self, void *param) {
 	char *ename = (char *) self->arg;
 	printf("Toggle to effect %s\n", self->name);
@@ -1899,6 +1907,7 @@ static void reset_menu_option(void) {
 	RESET_BOOL("Auto Frame Skip","autoframeskip");
 //	RESET_BOOL("Sleep while idle","sleepidle");
 	RESET_BOOL("Show FPS","showfps");
+    RESET_BOOL("Emulate raster","raster");
 #ifdef PANDORA
 	RESET_BOOL("16/9","wide");
 #endif
@@ -2014,6 +2023,11 @@ void gn_init_menu(void) {
 
 	gitem = gn_menu_create_item("Show FPS", MENU_CHECK, toggle_showfps, NULL);
 	gitem->val = CF_BOOL(cf_get_item_by_name("showfps"));
+	option_menu->item = list_append(option_menu->item, (void*) gitem);
+	option_menu->nb_elem++;
+    
+    gitem = gn_menu_create_item("Emulate raster", MENU_CHECK, toggle_raster, NULL);
+	gitem->val = CF_BOOL(cf_get_item_by_name("raster"));
 	option_menu->item = list_append(option_menu->item, (void*) gitem);
 	option_menu->nb_elem++;
 
