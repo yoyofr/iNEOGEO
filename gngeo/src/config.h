@@ -1,6 +1,8 @@
+#define VERSION_MAJ 0
+#define VERSION_MIN 3
+
 #if defined(TARGET_OS_IPHONE) && !TARGET_IPHONE_SIMULATOR
 #else
-#define TARGET_IPHONE_SIMULATOR 1
 #endif
 
 /* Define if building universal (internal helper macro) */
@@ -172,7 +174,7 @@
 #define USE_MAMEZ80 1
 #else
 /* Define if you have an ARM processor */
-#define PROCESSOR_ARM 1
+//#define PROCESSOR_ARM 1
 /* Define to enable generator68k */
 //#define USE_GENERATOR68K 1
 /* Define to enable cyclone */

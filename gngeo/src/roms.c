@@ -249,7 +249,7 @@ int init_garoubl(GAME_ROMS *r) {
 }
 
 int init_mslug3(GAME_ROMS *r) {
-	printf("INIT MSLUG3\n");
+	//printf("INIT MSLUG3\n");
 	if (need_decrypt) {
 		mslug3_decrypt_68k(r);
 		kof99_neogeo_gfx_decrypt(r, 0xad);
@@ -898,9 +898,10 @@ static int allocate_region(ROM_REGION *r, Uint32 size, int region) {
 #endif
 		if (r->p == 0) {
 			r->size = 0;
-			printf("Error allocating\n");
+			//printf("Error allocating\n");
 			/* TODO: Be more permissive, allow at least a dump */
-			printf("Not enough memory :( exiting\n");
+			//printf("Not enough memory :( exiting\n");
+            gn_popup_error("Error","Not enough memory :( exiting\n");
 			exit(1);
 			return 1;
 		}
@@ -948,8 +949,8 @@ static int read_data_i(ZFILE *gz, ROM_REGION *r, Uint32 dest, Uint32 size) {
 	Uint8 *p = r->p + dest;
 	Uint32 s = LOAD_BUF_SIZE, c, i;
 	if (r->p == NULL || r->size < (dest & ~0x1) + (size * 2)) {
-		printf("Region not allocated or not big enough %08x %08x\n", r->size,
-				dest + (size * 2));
+		//printf("Region not allocated or not big enough %08x %08x\n", r->size,dest + (size * 2));
+        gn_popup_error("Error","Region not allocated or not big enough %08x %08x\n", r->size,dest + (size * 2));
 		return -1;
 	}
 	//buf=malloc(s);
@@ -982,7 +983,8 @@ static int read_data_i(ZFILE *gz, ROM_REGION *r, Uint32 dest, Uint32 size) {
 static int read_data_p(ZFILE *gz, ROM_REGION *r, Uint32 dest, Uint32 size) {
 	Uint32 s = LOAD_BUF_SIZE, c, i = 0;
 	if (r->p == NULL || r->size < dest + size) {
-		printf("Region not allocated or not big enough\n");
+		//printf("Region not allocated or not big enough\n");
+        gn_popup_error("Error","Region not allocated or not big enough\n");
 		return -1;
 	}
 	while (size) {
@@ -1151,7 +1153,8 @@ void convert_all_char(Uint8 *Ptr, int Taille,
 
 	Src = (Uint8*) malloc(Taille);
 	if (!Src) {
-		printf("Not enought memory!!\n");
+		gn_popup_error("Error","Not enought memory!!\n");
+        
 		return;
 	}
 	sav_src = Src;
@@ -1737,11 +1740,11 @@ int read_region(FILE *gno, GAME_ROMS *roms) {
 			return FALSE;
 	}
 
-	printf("Read region %d %08X type %d\n", lid, size, type);
+	//printf("Read region %d %08X type %d\n", lid, size, type);
 	if (type == 0) {
 		/* TODO: Support ADPCM streaming for platform with less that 64MB of Mem */
 		allocate_region(r, size, lid);
-		printf("Load %d %08x\n", lid, r->size);
+		//printf("Load %d %08x\n", lid, r->size);
 		totread += fread(r->p, r->size, 1, gno);
 	} else {
 		Uint32 nb_block, block_size;
@@ -1749,7 +1752,7 @@ int read_region(FILE *gno, GAME_ROMS *roms) {
 		totread += fread(&block_size, sizeof (Uint32), 1, gno);
 		nb_block = size / block_size;
 
-		printf("Region size=%08X\n", size);
+		//printf("Region size=%08X\n", size);
 		r->size = size;
 
 
@@ -1764,7 +1767,7 @@ int read_region(FILE *gno, GAME_ROMS *roms) {
 		/* TODO: Find the best cache size dynamically! */
 		for (i = 0; cache_size[i] != 0; i++) {
 			if (init_sprite_cache(cache_size[i]*1024 * 1024, block_size) == 0) {
-				printf("Cache size=%dMB\n", cache_size[i]);
+				//printf("Cache size=%dMB\n", cache_size[i]);
 				break;
 			}
 		}

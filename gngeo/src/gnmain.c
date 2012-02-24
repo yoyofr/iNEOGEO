@@ -135,7 +135,8 @@ void init_sdl(void /*char *rom_name*/) {
     fontbuf = SDL_CreateRGBSurfaceFrom(font_image.pixel_data, font_image.width, font_image.height
 				       , 24, font_image.width * 3, 0xFF0000, 0xFF00, 0xFF, 0);
     SDL_SetColorKey(fontbuf,SDL_SRCCOLORKEY,SDL_MapRGB(fontbuf->format,0xFF,0,0xFF));
-    //fontbuf=SDL_DisplayFormat(fontbuf);
+    
+    //fontbuf=SDL_DisplayFormat(fontbuf);    
     icon = SDL_CreateRGBSurfaceFrom(gngeo_icon.pixel_data, gngeo_icon.width,
 				    gngeo_icon.height, gngeo_icon.bytes_per_pixel*8,
 				    gngeo_icon.width * gngeo_icon.bytes_per_pixel,

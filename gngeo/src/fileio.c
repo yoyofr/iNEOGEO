@@ -255,11 +255,11 @@ bool load_game_config(char *rom_name) {
 		if (strstr(rom_name,".gno")!=NULL) {
 			char *name=dr_gno_romname(rom_name);
 			if (name) {
-				printf("Tring to load a gno file %s %s\n",rom_name,name);
+				//printf("Trying to load a gno file %s %s\n",rom_name,name);
 				drconf=alloca(strlen(gpath)+strlen(name)+strlen(".cf")+1);
 				sprintf(drconf,"%s%s.cf",gpath,name);
 			} else {
-				printf("Error while loading %s\n",rom_name);
+				//printf("Error while loading %s\n",rom_name);
 				return false;
 			}
 		} else {

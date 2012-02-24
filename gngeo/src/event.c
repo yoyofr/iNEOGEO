@@ -23,7 +23,7 @@ float joy_analog_x[4];
 float joy_analog_y[4];
 
 extern int device_w,device_h,device_isSlow,device_isIpad;
-extern int cur_width,cur_height;
+extern int cur_width,cur_height,refresh_counter;
 
 int virtual_stick_on=1;
 int virtual_stick_pad=0;
@@ -330,6 +330,9 @@ int handle_event(void) {
     
     if (num_of_joys>=2) {
         if (wm_joy_pl2=iOS_wiimote_check(&(joys[1]))) virtual_stick_on=0;
+        if (wm_joy_pl2!=wm_prev_joy_pl2) {
+            wm_prev_joy_pl2=wm_joy_pl2;
+
         joy_state[1][GN_UP]=(wm_joy_pl2&WII_JOY_UP?1:0);
         joy_state[1][GN_DOWN]=(wm_joy_pl2&WII_JOY_DOWN?1:0);
         joy_state[1][GN_LEFT]=(wm_joy_pl2&WII_JOY_LEFT?1:0);
@@ -342,6 +345,7 @@ int handle_event(void) {
         joy_state[1][GN_START]=(wm_joy_pl2&WII_JOY_START?1:0);
         joy_state[1][GN_MENU_KEY]=(wm_joy_pl2&WII_JOY_HOME?1:0);
         joy_state[1][GN_TURBO]=(wm_joy_pl2&WII_JOY_E?1:0);
+        }
     }
     if (num_of_joys>=1) {        
         if (wm_joy_pl1=iOS_wiimote_check(&(joys[0]))) virtual_stick_on=0;
@@ -768,6 +772,9 @@ int wait_event(void) {
     
     if (num_of_joys>=2) {
         if (wm_joy_pl2=iOS_wiimote_check(&(joys[1]))) virtual_stick_on=0;
+        if (wm_joy_pl2!=wm_prev_joy_pl2) {
+            refresh_counter=1;
+            wm_prev_joy_pl2=wm_joy_pl2;
         joy_state[1][GN_UP]=(wm_joy_pl2&WII_JOY_UP?1:0);
         joy_state[1][GN_DOWN]=(wm_joy_pl2&WII_JOY_DOWN?1:0);
         joy_state[1][GN_LEFT]=(wm_joy_pl2&WII_JOY_LEFT?1:0);
@@ -780,12 +787,13 @@ int wait_event(void) {
         joy_state[1][GN_START]=(wm_joy_pl2&WII_JOY_START?1:0);
         joy_state[1][GN_MENU_KEY]=(wm_joy_pl2&WII_JOY_HOME?1:0);
         joy_state[1][GN_TURBO]=(wm_joy_pl2&WII_JOY_E?1:0);
-        
+        }
     }
     if (num_of_joys>=1) {        
         if (wm_joy_pl1=iOS_wiimote_check(&(joys[0]))) virtual_stick_on=0;
         
         if (wm_joy_pl1!=wm_prev_joy_pl1) {
+            refresh_counter=1;
             wm_prev_joy_pl1=wm_joy_pl1;
         joy_state[0][GN_UP]=(wm_joy_pl1&WII_JOY_UP?1:0);
         joy_state[0][GN_DOWN]=(wm_joy_pl1&WII_JOY_DOWN?1:0);
@@ -799,10 +807,11 @@ int wait_event(void) {
         joy_state[0][GN_START]=(wm_joy_pl1&WII_JOY_START?1:0);
         joy_state[0][GN_MENU_KEY]=(wm_joy_pl1&WII_JOY_HOME?1:0);
         joy_state[0][GN_TURBO]=(wm_joy_pl1&WII_JOY_E?1:0);
+            
         }
     }
     
-	while (SDL_PollEvent(&event)) {
+	while (SDL_PollEvent(&event)) {        
         switch (event.type) {
             case SDL_MOUSEMOTION:
                 break;
@@ -811,6 +820,7 @@ int wait_event(void) {
             case SDL_MOUSEBUTTONUP:
                 break;
             case SDL_FINGERMOTION:
+                refresh_counter=1;
                 state = SDL_GetTouch(event.tfinger.touchId);
                 rx = event.tfinger.x*cur_width / state->xres;
                 ry = event.tfinger.y*cur_height / state->yres;
@@ -869,11 +879,11 @@ int wait_event(void) {
                 
                 break;
             case SDL_FINGERDOWN:
+                refresh_counter=1;
                 virtual_stick_on=1;
                 state = SDL_GetTouch(event.tfinger.touchId);
                 rx = event.tfinger.x*cur_width / state->xres;
                 ry = event.tfinger.y*cur_height / state->yres;
-                
                 
                 if (vstick_update_status(rx,ry)) { //finger is on pad
                     joy_state[0][GN_UP]=(virtual_stick_pad==GN_UP?1:0);
@@ -897,6 +907,7 @@ int wait_event(void) {
                 }
                 break;
             case SDL_FINGERUP:
+                refresh_counter=1;
                 if (virtual_stick_padfinger==event.tfinger.fingerId) {
                     virtual_stick_pad=0;                    
                     joy_state[0][GN_UP]=0;
@@ -926,6 +937,7 @@ int wait_event(void) {
                 counter=40;
                 break;
             case SDL_KEYDOWN:
+                refresh_counter=1;
                 virtual_stick_on=0;
                 /* Some default keyboard standard key */
                 switch (event.key.keysym.sym) {
@@ -972,6 +984,7 @@ int wait_event(void) {
                 }
                 break;
             case SDL_KEYUP:
+                refresh_counter=1;
                 //printf("KEYUPPPPP!!!\n");
                 
                 for(i=0;i<GN_MAX_KEY;i++)

@@ -139,7 +139,7 @@ int init_sprite_cache(Uint32 size, Uint32 bsize) {
 
 	/* Create our video cache */
 	gcache->slot_size = bsize;
-	printf("gfx_size=%08x\n", memory.rom.tiles.size);
+	//printf("gfx_size=%08x\n", memory.rom.tiles.size);
 	gcache->total_bank = memory.rom.tiles.size / gcache->slot_size;
 	gcache->ptr = malloc(gcache->total_bank * sizeof (Uint8*));
 	if (gcache->ptr == NULL)
@@ -153,13 +153,13 @@ int init_sprite_cache(Uint32 size, Uint32 bsize) {
 		free(gcache->ptr);
 		return 1;
 	}
-	printf("INIT CACHE %p\n", gcache->data);
+	//printf("INIT CACHE %p\n", gcache->data);
 
 	//gcache->max_slot=((float)gcache->size/0x4000000)*TOTAL_GFX_BANK;
 	//gcache->max_slot=((float)gcache->size/memory.rom.tiles.size)*gcache->total_bank;
 	gcache->max_slot = size / gcache->slot_size;
 	//gcache->slot_size=0x4000000/TOTAL_GFX_BANK;
-	printf("Allocating %08x for gfx cache (%d %d slot)\n", gcache->size, gcache->max_slot, gcache->slot_size);
+	//printf("Allocating %08x for gfx cache (%d %d slot)\n", gcache->size, gcache->max_slot, gcache->slot_size);
 	gcache->usage = malloc(gcache->max_slot * sizeof (Uint32));
 	for (i = 0; i < gcache->max_slot; i++)
 		gcache->usage[i] = -1;

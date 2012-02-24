@@ -88,7 +88,7 @@ static char last_loaded_snap[16];
 static SDL_Surface *rom_snap;
 
 static SDL_Surface *arrow_l, *arrow_r, *arrow_u, *arrow_d;
-static int interp;
+int refresh_counter;
 
 #define MENU_BIG   0
 #define MENU_SMALL 1
@@ -735,7 +735,10 @@ int gn_popup_question(char *name, char *fmt, ...) {
 
 	reset_event();
 
+    refresh_counter=1;
 	while (1) {
+        if (refresh_counter) {
+            refresh_counter=0;
 		draw_back();
 
 		draw_string(menu_buf, mfont, MENU_TITLE_X, MENU_TITLE_Y, name);
@@ -749,6 +752,7 @@ int gn_popup_question(char *name, char *fmt, ...) {
 			draw_string(menu_buf, sfont, ALIGN_RIGHT, ALIGN_DOWN, "   Yes  >  No");
 		SDL_BlitSurface(menu_buf, NULL, buffer, NULL);
 		screen_update();
+        } else SDL_Delay(20);		
 
 			//effect_menu->draw(effect_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
 		if ((a = yesno_menu->event_handling(yesno_menu)) >= 0) {
@@ -1093,8 +1097,6 @@ static int credit_action(GN_MENU_ITEM *self, void *param) {
 	return MENU_STAY;
 }
 
-#define VERSION_MAJ 0
-#define VERSION_MIN 2
 static int help_action(GN_MENU_ITEM *self, void *param) {
     gn_popup_info("Help","[iNEOGEO v%.1d.%.1d] by YoyoFR\nBased on great GnGeo from Mathieu Peponas\n\n*Use iTunes to upload ROMS in iNEOGEO.\n*Formats accepted are .ZIP and .GNO.\n*For large roms which cannot be loaded, please use\nGnGeo to create a .GNO dump\n\n* BTStack should be installed for Wiimotes support.",VERSION_MAJ,VERSION_MIN);
 	return MENU_STAY;
@@ -1129,12 +1131,14 @@ int menu_event_handling(struct GN_MENU *self) {
     
 	switch (wait_event()) {
 		case GN_UP:
+            refresh_counter=1;
 			if (self->current > 0)
 				self->current--;
 			else
 				self->current = self->nb_elem - 1;
 			break;
 		case GN_DOWN:
+            refresh_counter=1;
 			if (self->current < self->nb_elem - 1)
 				self->current++;
 			else
@@ -1142,20 +1146,25 @@ int menu_event_handling(struct GN_MENU *self) {
 			break;
 
 		case GN_LEFT:
+            refresh_counter=1;
 			self->current -= 10;
 			if (self->current < 0) self->current = 0;
 			break;
 		case GN_RIGHT:
+            refresh_counter=1;
 			self->current += 10;
 			if (self->current >= self->nb_elem) self->current = self->nb_elem - 1;
 			break;
 		case GN_B:
+            refresh_counter=1;
 			return MENU_CLOSE;
 			break;
         case GN_MENU_KEY:
+            refresh_counter=1;
 			return MENU_CLOSE;
 			break;
 		case GN_A:
+            refresh_counter=1;
 			//l = list_get_item_by_index(self->item, self->current);
 			mi = gn_menu_get_item_by_index(self, self->current);
 			if (mi && mi->action) {
@@ -1263,7 +1272,7 @@ extern char romerror[1024];
 static int loadrom_action(GN_MENU_ITEM *self, void *param) {
 	char *game = (char*) self->arg;
 
-	printf("Loading %s\n", game);
+	//printf("Loading %s\n", game);
 	close_game();
 	if (conf.sound) close_sdl_audio();
 
@@ -1367,10 +1376,13 @@ int rom_browser_menu(void) {
 		scaning = 0;
 		//SDL_WaitThread(anim_th, NULL);
 	}
-    
+    refresh_counter=1;
 	while (1) {
         rombrowser_on=1;
-		rbrowser_menu->draw(rbrowser_menu); //frame_skip(0);printf("fps: %s\n",fps_str);        
+        if (refresh_counter) {
+            refresh_counter=0;
+            rbrowser_menu->draw(rbrowser_menu); //frame_skip(0);printf("fps: %s\n",fps_str);        
+        } else SDL_Delay(20);		
         rombrowser_on=0;
         if ((a = rbrowser_menu->event_handling(rbrowser_menu)) > 0) {
 			if (a == MENU_CLOSE)
@@ -1490,8 +1502,13 @@ int rom_dumper_menu(void) {
 		//SDL_WaitThread(anim_th, NULL);
 	}
     
+    refresh_counter=1;
 	while (1) {
-		rdumper_menu->draw(rdumper_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+        if (refresh_counter) {
+            refresh_counter=0;
+            rdumper_menu->draw(rdumper_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+        } else SDL_Delay(20);		
+		
 		if ((a = rdumper_menu->event_handling(rdumper_menu)) > 0) {
 			if (a == MENU_CLOSE)
 				return MENU_STAY;
@@ -1646,8 +1663,13 @@ static int change_effect(GN_MENU_ITEM *self, void *param) {
 			i++;
 		}
 	}
+    refresh_counter=1;
 	while (1) {
-		effect_menu->draw(effect_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+        if (refresh_counter) {
+            refresh_counter=0;
+            effect_menu->draw(effect_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+        } else SDL_Delay(20);		
+		
 		if ((a = effect_menu->event_handling(effect_menu)) > 0) {
 			self->str = CF_STR(cf_get_item_by_name("effect"));
 			return MENU_STAY;
@@ -1720,8 +1742,14 @@ static int change_samplerate(GN_MENU_ITEM *self, void *param) {
 
 	//	gn_menu_disable_item(srate_menu,"No sound");
 
+    refresh_counter=1;
 	while (1) {
-		srate_menu->draw(srate_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+        if (refresh_counter) {
+            refresh_counter=0;
+            srate_menu->draw(srate_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+        } else SDL_Delay(20);		
+		
+		
 		if ((a = srate_menu->event_handling(srate_menu)) > 0) {
 			if (conf.sound)
 				sprintf(self->str, "%d", conf.sample_rate);
@@ -1775,8 +1803,14 @@ static int change_system(GN_MENU_ITEM *self, void *param) {
 		system_menu->nb_elem++;
 	}
     
+    refresh_counter=1;
 	while (1) {
-		system_menu->draw(system_menu);
+        if (refresh_counter) {
+            refresh_counter=0;
+            system_menu->draw(system_menu);
+        } else SDL_Delay(20);		
+
+		
 		if ((a = system_menu->event_handling(system_menu)) > 0) {
             sprintf(self->str, "%s", CF_STR(cf_get_item_by_name("system")));
             
@@ -1833,8 +1867,13 @@ static int change_country(GN_MENU_ITEM *self, void *param) {
 		country_menu->nb_elem++;
 	}
     
+    refresh_counter=1;
 	while (1) {
-		country_menu->draw(country_menu);
+        if (refresh_counter) {
+            refresh_counter=0;
+            country_menu->draw(country_menu);
+        } else SDL_Delay(20);		
+		
 		if ((a = country_menu->event_handling(country_menu)) > 0) {
             sprintf(self->str, "%s", CF_STR(cf_get_item_by_name("country")));
             
@@ -1925,8 +1964,14 @@ static int option_action(GN_MENU_ITEM *self, void *param) {
 	//exit(0);
 	int a;
 	reset_menu_option();
+    refresh_counter=1;
 	while (1) {
-		option_menu->draw(option_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+        if (refresh_counter) {
+            refresh_counter=0;
+            option_menu->draw(option_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+        } else SDL_Delay(20);		
+
+		
 		if ((a = option_menu->event_handling(option_menu)) > 0) {
 			reset_menu_option();
 			return MENU_STAY;
@@ -2079,6 +2124,8 @@ Uint32 run_menu(void) {
 	static Uint32 init = 0;
 	int a;
     
+    SDL_SetHint(SDL_HINT_IDLE_TIMER_DISABLED, "0");
+    
 	if (init == 0) {
 		init = 1;
 		gn_init_menu();
@@ -2109,12 +2156,17 @@ Uint32 run_menu(void) {
 			gn_menu_enable_item(main_menu, "Load state");
 	}
 
+    refresh_counter=1;
 	while (1) {
-		main_menu->draw(main_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+		if (refresh_counter) {
+            main_menu->draw(main_menu); //frame_skip(0);printf("fps: %s\n",fps_str);
+            refresh_counter=0;
+        } else SDL_Delay(20);
 		if ((a = main_menu->event_handling(main_menu)) > 0) {
 			reset_event();
             if (conf.wiimote) stopWiimoteDetection();
             if (rom_snap) SDL_FreeSurface(rom_snap);
+            SDL_SetHint(SDL_HINT_IDLE_TIMER_DISABLED, "1");
 			return a;
         }
 	}
@@ -2122,6 +2174,8 @@ Uint32 run_menu(void) {
 	if (conf.game == NULL) return 2; /* Exit */
     
     if (conf.wiimote) stopWiimoteDetection();
+    
+    SDL_SetHint(SDL_HINT_IDLE_TIMER_DISABLED, "1");
     
 	return 0;
 }
